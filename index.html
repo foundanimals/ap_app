@@ -7,10 +7,10 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="/css/normalize.min.css">
+        <link rel="stylesheet" href="/css/main.css">
 
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <!--<script src="/js/vendor/modernizr-2.6.2.min.js"></script>-->
 
         <style>
             body {
@@ -20,42 +20,151 @@
                 position: relative;
                 width: 960px;
                 margin: 0 auto;
+                margin-top: 31px;
             }
 
             #ap_loading {
-                position: fixed;
+                position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
                 color: #fff;
+                font-size: 18px;
                 text-align: center;
-                background: rgba(0, 255, 0, 1);
+                padding-top: 10%;
+                padding-bottom: 10%;
+                background: #30778B;
             }
             .ready #ap_loading {
                 display: none;
             }
 
             .ap_left {
+                display: none;
                 float: left;
                 width: 229px;
             }
             .ap_body {
-                float: right;
-                width: 720px;
+                _position: relative;
+                _float: right;
+                _width: 720px;
+
+                width: 890px;
+                margin: 0 auto;
             }
 
             #ap_filters {
+                width: 100%;
+            }
+            #ap_filters .title {
+                width: 100%;
+                height: 70px;
                 color: #fff;
-                background: #30778B;
+                text-align: center;
+                line-height: 70px;
+                background: #31788C;
+                border-radius: 3px 3px 0 0;
+            }
+            #ap_filters .controls {
+                width: 100%;
+                min-height: 420px;
+                background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(255,255,255,1) 80%, rgba(255,255,255,0) 100%);
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(80%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0)));
+                background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%);
+                background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%);
+                background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%);
+                background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
             }
 
+
             #ap_sorting {
+                display: none;
                 width: 100%;
                 height: 48px;
                 margin-bottom: 22px;
                 background: #fff;
             }
+
+            #ap_sorting .range {
+                float: left;
+                padding-left: 30px;
+            }
+            #ap_sorting .range > div {
+                float: left;
+                color: #7C837C;
+                padding-top: 12px;
+            }
+
+            #ap_sorting .viewable {
+                float: left;
+                padding-left: 30px;
+            }
+            #ap_sorting .viewable span {
+                display: block;
+                float: left;
+                color: #7C837C;
+                padding-top: 12px;
+            }
+            #ap_sorting .viewable .viewable_dropdown {
+                float: left;
+                width: 74px;
+                height: 34px;
+                color: #7C837C;
+                margin-top: 5px;
+                margin-left: 5px;
+                border: 1px solid #C9C9C9;
+            }
+
+            #ap_sorting .sorting {
+                float: left;
+                padding-left: 30px;
+            }
+            #ap_sorting .sorting span {
+                display: block;
+                float: left;
+                color: #7C837C;
+                padding-top: 12px;
+            }
+            #ap_sorting .sorting .sorting_dropdown {
+                float: left;
+                width: 158px;
+                height: 34px;
+                color: #7C837C;
+                margin-top: 5px;
+                margin-left: 5px;
+                border: 1px solid #C9C9C9;
+            }
+
+            #ap_sorting .paging {
+                float: left;
+                padding-left: 30px;
+            }
+            #ap_sorting .paging span,
+            #ap_sorting .paging_controls span {
+                display: block;
+                float: left;
+                color: #7C837C;
+                padding-top: 12px;
+            }
+            #ap_sorting .paging_controls {
+                float: left;
+            }
+            #ap_sorting .paging_controls a {
+                float: left;
+                color: #7C837C;
+                text-decoration: none;
+                padding-top: 12px;
+            }
+            #ap_sorting .paging_controls a:hover {
+                color: #31788C;
+                cursor: pointer;
+            }
+            #ap_sorting .paging_controls a.active {
+                color: #31788C;
+                pointer-events: none;
+            }
+
 
             #ap_content {
                 clear: both;
@@ -68,7 +177,7 @@
                 width: 169px;
                 height: 192px;
                 margin: 0 12px 12px 0;
-                background: url(img/pet_background.png) repeat-x;
+                background: url(/img/pet_background.png) repeat-x;
                 border: 1px solid #CAC9C7;
             }
             .pet .pet_name {
@@ -114,27 +223,39 @@
                 font-weight: bold;
                 text-align: center;
             }
+
+
+
+
         </style>
     </head>
     <body>
 
         <div id="ap_container">
-            <div id="ap_loading">loading</div>
+            
 
             <div class="ap_left">
                 <div id="ap_filters">
-                    Adoptable Pets
+                    <div class="title">Adoptable Pets</div>
+                    <div class="controls">&nbsp;</div>
                 </div>
             </div>
 
             <div class="ap_body">
-                <div id="ap_sorting"></div>
+                <div id="ap_loading">loading</div>
+
+                <div id="ap_sorting">
+                    <div class="range"><div class="range_start">0</div> <div>&nbsp;of&nbsp;</div> <div class="range_end">0</div></div>
+                    <div class="viewable"><span>View</span> <div class="viewable_dropdown"></div></div>
+                    <div class="sorting"><span>Sort by</span> <div class="sorting_dropdown"></div></div>
+                    <div class="paging"><span>Page:&nbsp;</span> <div class="paging_controls"><a href="" class="active">1</a><span>&nbsp;</span> <a href="">2</a><span>&nbsp;</span> <a href="">3</a><span>&nbsp;</span> <a href="" class="last">></a><span>&nbsp;</span> </div></div>
+                </div>
                 <div id="ap_content"></div>
             </div>
         </div>
 
-        <script src="js/vendor/jquery-1.11.0.min.js"></script>
-        <script src="js/vendor/underscore-min.js"></script>
-        <script src="js/ap_app.js"></script>
+        <script src="/js/vendor/jquery-1.11.0.min.js"></script>
+        <script src="/js/vendor/underscore-min.js"></script>
+        <script src="/js/ap_app.js"></script>
     </body>
 </html>

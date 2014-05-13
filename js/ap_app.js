@@ -2,11 +2,14 @@
 	var ap = $('#ap_container');
 	var ap_content = $('#ap_content');
 
+	var ap_range_start = $('.range_start');
+	var ap_range_end = $('.range_end');
+
 	var total_locations = 0;
 	var total_locations_counter = 0;
 
 	var locations = [
-		['Test City', 'http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
+		// ['Test City', 'http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
 		['Culver City', 'http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
 		['Lakewood', 'http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
 	];
@@ -35,7 +38,7 @@
 	var getData = function(location, location_title){
 		$.ajax({
 			type: 'post',
-			url: 'getData.php',
+			url: '/ap-app-includes/getData.php',
 			data: {data_url: location}
 		}).done(function(data, textStatus, jqXHR){
 			console.log(''+ location_title +' data received');
@@ -69,6 +72,8 @@
 
 	var formatData = function(){
 		if (complete_data.length){
+			total_count = complete_data.length;
+
 			for (var i=0; i < complete_data.length; i++){
 				pet_location = complete_data[i].location;
 
@@ -92,11 +97,13 @@
 				photo_w = ''+ complete_data[i].results_photo_width +'px';
 				photo_h = ''+ complete_data[i].results_photo_height +'px';
 
-				cellFormat = '<div class="pet" class="'+ pet_location +'_location"><div class="pet_name">'+ pet_name +'</div> <div class="photo_wrapper"><img class="pet_photo" src="'+ pet_photo +'" style="width: '+ photo_w +'; height: '+ photo_h +';" /></div> <div class="pet_info">'+ pet_sex +', <span>'+ pet_age +'</span></div> <div class="pet_city">'+ pet_location +'</div> </div>';
+				cellFormat = '<div class="pet" class="'+ pet_location +'_location"><div class="photo_wrapper"><img class="pet_photo" src="'+ pet_photo +'" style="width: '+ photo_w +'; height: '+ photo_h +';" /></div> <div class="pet_name">'+ pet_name +'</div> <div class="pet_info">'+ pet_sex +', <span>'+ pet_age +'</span></div> <div class="pet_city">'+ pet_location +'</div> </div>';
 
 				ap_content.append(cellFormat);
 			}
 			
+			ap_range_start.html(total_count);
+			ap_range_end.html(total_count);
 			ap.addClass('ready');
 		}
 		else {
