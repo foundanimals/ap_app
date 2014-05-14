@@ -2,6 +2,8 @@
 	var ap = $('#ap_container');
 	var ap_content = $('#ap_content');
 
+	var ap_detail = $('#pet_details');
+
 	var ap_range_start = $('.range_start');
 	var ap_range_end = $('.range_end');
 
@@ -33,12 +35,12 @@
 				console.log('loop complete');
 			}
 		}
-	};
+	}
 
 	var getData = function(location, location_title){
 		$.ajax({
 			type: 'post',
-			url: '/ap-app-includes/getData.php',
+			url: 'getData.php',
 			data: {data_url: location}
 		}).done(function(data, textStatus, jqXHR){
 			console.log(''+ location_title +' data received');
@@ -75,6 +77,9 @@
 			total_count = complete_data.length;
 
 			for (var i=0; i < complete_data.length; i++){
+				pet_id = 'pet_id_'+ complete_data[i].pet_id +'';
+				pet_url = complete_data[i].details_url;
+
 				pet_location = complete_data[i].location;
 
 				pet_name = complete_data[i].pet_name.split(' ')[0];
@@ -82,7 +87,11 @@
 				pet_name = pet_name.split('.')[0];
 				pet_name = pet_name.split(',')[0];
 
+				pet_age = complete_data[i].age;
+
 				pet_photo = complete_data[i].results_photo_url;
+				pet_photo_w = ''+ complete_data[i].results_photo_width +'px';
+				pet_photo_h = ''+ complete_data[i].results_photo_height +'px';
 
 				pet_sex = complete_data[i].sex;
 				if (pet_sex == 'm'){
@@ -92,14 +101,14 @@
 					pet_sex = 'Female'
 				}
 
-				pet_age = complete_data[i].age;
-
-				photo_w = ''+ complete_data[i].results_photo_width +'px';
-				photo_h = ''+ complete_data[i].results_photo_height +'px';
-
-				cellFormat = '<div class="pet" class="'+ pet_location +'_location"><div class="photo_wrapper"><img class="pet_photo" src="'+ pet_photo +'" style="width: '+ photo_w +'; height: '+ photo_h +';" /></div> <div class="pet_name">'+ pet_name +'</div> <div class="pet_info">'+ pet_sex +', <span>'+ pet_age +'</span></div> <div class="pet_city">'+ pet_location +'</div> </div>';
+				cellFormat = '<div class="pet" id="'+ pet_id +'" data-pet-url="'+ pet_url +'"><div class="photo_wrapper"><img class="pet_photo" src="'+ pet_photo +'" style="width: '+ pet_photo_w +'; height: '+ pet_photo_h +';" /></div> <div class="pet_name">'+ pet_name +'</div> <div class="pet_info">'+ pet_sex +', <span>'+ pet_age +'</span></div> <div class="pet_city">'+ pet_location +'</div> </div>';
 
 				ap_content.append(cellFormat);
+
+				$('#'+ pet_id +'').click(function(){
+					data_url = $(this).attr('data-pet-url');
+					getDetails(data_url);
+				});
 			}
 			
 			ap_range_start.html(total_count);
@@ -111,6 +120,26 @@
 			ap_content.append('there is no data');
 			ap.addClass('ready');
 		}
+	}
+
+
+	var getDetails = function(url){
+		$.ajax({
+			type: 'post',
+			url: 'getData.php',
+			data: {data_url: url}
+		}).done(function(data, textStatus, jqXHR){
+			console.log(data);
+			ap_detail.html(data);
+			ap_detail.addClass('active');
+
+			ap_detail.click(function(){
+				$(this).attr('class', '');
+			});
+			//parseData(data, location_title);
+		}).fail(function(jqXHR, textStatus, errorThrown){
+			console.log('proxy or service failure');
+		});
 	}
 
 

@@ -7,10 +7,10 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="/css/normalize.min.css">
-        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
 
-        <!--<script src="/js/vendor/modernizr-2.6.2.min.js"></script>-->
+        <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
 
         <style>
             body {
@@ -18,8 +18,7 @@
             }
             #ap_container {
                 position: relative;
-                width: 960px;
-                margin: 0 auto;
+                width: 100%;
                 margin-top: 31px;
             }
 
@@ -34,23 +33,25 @@
                 padding-top: 10%;
                 padding-bottom: 10%;
                 background: #30778B;
+                z-index: 100;
             }
             .ready #ap_loading {
                 display: none;
             }
 
+            #ap_layout {
+                position: relative;
+                width: 960px;
+                margin: 0 auto;
+            }
             .ap_left {
-                display: none;
                 float: left;
                 width: 229px;
             }
             .ap_body {
-                _position: relative;
-                _float: right;
-                _width: 720px;
-
-                width: 890px;
-                margin: 0 auto;
+                position: relative;
+                float: right;
+                width: 720px;
             }
 
             #ap_filters {
@@ -79,7 +80,6 @@
 
 
             #ap_sorting {
-                display: none;
                 width: 100%;
                 height: 48px;
                 margin-bottom: 22px;
@@ -177,8 +177,9 @@
                 width: 169px;
                 height: 192px;
                 margin: 0 12px 12px 0;
-                background: url(/img/pet_background.png) repeat-x;
+                background: url(img/pet_background.png) repeat-x;
                 border: 1px solid #CAC9C7;
+                cursor: pointer;
             }
             .pet .pet_name {
                 position: absolute;
@@ -225,37 +226,49 @@
             }
 
 
-
+            #pet_details {
+                display: none;
+                position: fixed;
+                width: 100%;
+                background: rgba(255, 255, 0, 0.9);
+                z-index: 100;
+            }
+            #pet_details.active {
+                display: block;
+            }
 
         </style>
     </head>
     <body>
 
         <div id="ap_container">
-            
-
-            <div class="ap_left">
-                <div id="ap_filters">
-                    <div class="title">Adoptable Pets</div>
-                    <div class="controls">&nbsp;</div>
-                </div>
+            <div id="pet_details">
             </div>
-
-            <div class="ap_body">
+            
+            <div id="ap_layout">
                 <div id="ap_loading">loading</div>
 
-                <div id="ap_sorting">
-                    <div class="range"><div class="range_start">0</div> <div>&nbsp;of&nbsp;</div> <div class="range_end">0</div></div>
-                    <div class="viewable"><span>View</span> <div class="viewable_dropdown"></div></div>
-                    <div class="sorting"><span>Sort by</span> <div class="sorting_dropdown"></div></div>
-                    <div class="paging"><span>Page:&nbsp;</span> <div class="paging_controls"><a href="" class="active">1</a><span>&nbsp;</span> <a href="">2</a><span>&nbsp;</span> <a href="">3</a><span>&nbsp;</span> <a href="" class="last">></a><span>&nbsp;</span> </div></div>
+                <div class="ap_left">
+                    <div id="ap_filters">
+                        <div class="title">Adoptable Pets</div>
+                        <div class="controls">&nbsp;</div>
+                    </div>
                 </div>
-                <div id="ap_content"></div>
+
+                <div class="ap_body">
+                    <div id="ap_sorting">
+                        <div class="range"><div class="range_start">0</div> <div>&nbsp;of&nbsp;</div> <div class="range_end">0</div></div>
+                        <div class="viewable"><span>View</span> <div class="viewable_dropdown"></div></div>
+                        <div class="sorting"><span>Sort by</span> <div class="sorting_dropdown"></div></div>
+                        <div class="paging"><span>Page:&nbsp;</span> <div class="paging_controls"><a href="" class="active">1</a><span>&nbsp;</span> <a href="">2</a><span>&nbsp;</span> <a href="">3</a><span>&nbsp;</span> <a href="" class="last">></a><span>&nbsp;</span> </div></div>
+                    </div>
+                    <div id="ap_content"></div>
+                </div>
             </div>
         </div>
 
-        <script src="/js/vendor/jquery-1.11.0.min.js"></script>
-        <script src="/js/vendor/underscore-min.js"></script>
-        <script src="/js/ap_app.js"></script>
+        <script src="js/vendor/jquery-1.11.0.min.js"></script>
+        <script src="js/vendor/underscore-min.js"></script>
+        <script src="js/ap_app.js"></script>
     </body>
 </html>
