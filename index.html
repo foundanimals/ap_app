@@ -225,24 +225,93 @@
                 text-align: center;
             }
 
+            
 
             #pet_details {
                 display: none;
                 position: fixed;
-                width: 100%;
-                background: rgba(255, 255, 0, 0.9);
-                z-index: 100;
+                top: 5%;
+                left: 15%;
+                width: 70%;
+                background: rgba(49, 120, 140, 0.7);
+                border-radius: 7px;
+                z-index: 150;
             }
-            #pet_details.active {
+            .details_active #pet_details {
                 display: block;
             }
 
+            #pet_details_mask {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.5);
+                z-index: 100;
+            }
+            .details_active #pet_details_mask {
+                display: block;
+            }
+
+            #pet_details_close {
+                position: absolute;
+                top: -3%;
+                right: -3%;
+                color: #fff;
+                padding: 3%;
+                background: rgba(49, 120, 140, 0.7);
+                border-radius: 9999px;
+                cursor: pointer;
+            }
+
+            #pet_details .pet_details_body {
+                overflow: hidden;
+                margin: 1%;
+                background: #fff;
+                border-radius: 4px;
+            }
+
+            #pet_details .pet_details_body .pet_details_content {
+                padding: 2%;
+            }
+
+            #pet_details_content div.no-value {
+                color: red !important;
+            }
+
+            #pet_details_content .pet_details_pure {
+                display: inline-block;
+            }
         </style>
     </head>
     <body>
 
         <div id="ap_container">
+            <div id="pet_details_mask"></div>
+
             <div id="pet_details">
+                <div id="pet_details_close">
+                    close
+                </div>
+
+                <div class="pet_details_body">
+                    <div id="pet_details_content">
+                        <div class="pet_details_name">Name: <span></span></div>
+                        <div class="pet_details_color">Color: <span></span></div>
+                        <div class="pet_details_species">Species: <span></span></div>
+                        <div class="pet_details_age">Age: <span></span></div>
+                        <div class="pet_details_sex">Sex: <span></span></div>
+                        <div class="pet_details_size">Size: <span></span></div>
+                        <div class="pet_details_hair">Hair Length: <span></span></div>
+                        <div class="pet_details_primary">Primary Breed: <span></span> <div class="pet_details_pure"><span></span></div> </div>
+                        <div class="pet_details_secondary">Secondary Breed: <span></span></div>
+                        <div class="pet_details_special_needs">Special Needs: <span></span></div>
+                        <div class="pet_details_city">City: <span></span></div>
+                        <div class="pet_details_photos"></div>
+                    </div>
+                </div>
             </div>
             
             <div id="ap_layout">
