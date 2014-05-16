@@ -28,9 +28,9 @@
 	var filter_count = 0;
 
 	var locations = [
-		// ['Test City', 'http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
-		['Culver City', 'http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
-		['Lakewood', 'http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
+		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
+		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
 	];
 
 	var complete_data = [];
@@ -42,60 +42,154 @@
 	filter_set.age = [];
 	filter_set.color = [];
 	filter_set.breed = [];
-	filter_set.magic = ['sdfsdfsdf', 'sdfsdfsdf'];
+
+	// _ filtered set
+	var _filter_set = [];
+	_filter_set.location = [];
+	_filter_set.species = [];
+	_filter_set.sex = [];
+	_filter_set.age = [];
+	_filter_set.color = [];
+	_filter_set.breed = [];
+
+
+
+	var total_pets = 0;
+	var total_pets_i = 0;
 
 
 	var initApp = function(){
-		console.log('init apApp');
-
 		ap.attr('class', '');
 
-		total_locations = locations.length;
+		console.log('init apApp');
 		console.log(''+ locations.length +' locations');
 
-		for (var i=0; i < locations.length; i++){
-			getData(locations[i][1], locations[i][0]);
-
-			if (i + 1 == locations.length){
-				console.log('loop complete');
+		if (locations.length){
+			for (var i = 0; i < locations.length; i++){
+				getData(locations[i][0]);
 			}
+
+			console.log('init loop complete');
+		}
+		else {
+			console.log('initApp: no locations or program error');
 		}
 	}
 
-	var getData = function(location, location_title){
+
+	var getData = function(url){
 		$.ajax({
 			type: 'post',
 			url: 'getData.php',
-			data: {data_url: location}
+			data: {data_url: url}
 		}).done(function(data, textStatus, jqXHR){
-			console.log(''+ location_title +' data received');
-			parseData(data, location_title);
+			console.log('data received');
+			getDetails(data);
 		}).fail(function(jqXHR, textStatus, errorThrown){
-			console.log('proxy or service failure');
+			console.log('getData: proxy or service failure');
 		});
 	}
 
-	var parseData = function(location_data, location_title){
-		_parse_data = JSON.parse(location_data);
 
-		if (_parse_data.pets){
-			for (var i=0; i < _parse_data.pets.length; i++){
-				_parse_data.pets[i].location = location_title;
-				complete_data.push(_parse_data.pets[i]);
+	var getDetails = function(data){
+		data = JSON.parse(data);
+
+		total_pets = total_pets + data.returned_pets;
+		
+		console.log(total_pets);
+		//console.log(data);
+
+		if (data.pets){
+			for (var i=0; i < data.pets.length; i++){
+				console.log(data.pets[i].details_url);
+				url = data.pets[i].details_url;
+
+				$.ajax({
+					type: 'post',
+					url: 'getData.php',
+					data: {data_url: url}
+				}).done(function(data, textStatus, jqXHR){
+					data = JSON.parse(data);
+					//console.log(data.pet);
+					complete_data.push(data.pet);
+
+					total_pets_i = total_pets_i + 1;
+					if (total_pets_i == total_pets){
+						console.log('received all '+ total_pets +' pet details');
+						console.log(complete_data);
+						processData();
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown){
+					console.log('getDetails: proxy or service failure');
+				});
 			}
 		}
 		else {
-			console.log(''+ location_title +' no results');
-		}
-
-		total_locations_counter = total_locations_counter + 1;
-
-		if (total_locations_counter == total_locations){
-			console.log(complete_data);
-			
-			createFilters();
+			console.log('getDetails: there is no data');
 		}
 	}
+
+
+	var processData = function(){
+		console.log('processing data');
+
+		for (var key in complete_data){
+			if (complete_data.hasOwnProperty(key)){
+				_color = complete_data[key].color.split(' ')[0];
+				_color = complete_data[key].color.split('- W')[0];
+				_color = complete_data[key].color.split('-')[0];
+				_color = complete_data[key].color.split('.')[0];
+				_color = complete_data[key].color.split(',')[0];
+				_color = complete_data[key].color.split('(')[0];
+				_color = complete_data[key].color.split('/')[0];
+				if (_color.length < 6){
+					filter_set.color.push(_color);
+				}
+
+				_breed = complete_data[key].primary_breed.split(' ')[0];
+				_breed = complete_data[key].primary_breed.split('-')[0];
+				_breed = complete_data[key].primary_breed.split('.')[0];
+				_breed = complete_data[key].primary_breed.split(',')[0];
+				_breed = complete_data[key].primary_breed.split('(')[0];
+				_breed = complete_data[key].primary_breed.split('/')[0];
+				_breed = complete_data[key].primary_breed.split('(Unknown')[0];
+				filter_set.breed.push(_breed);
+
+				complete_data[key].color = _color;
+				complete_data[key].primary_breed = _breed;
+			}
+		}
+
+		//displayFilters();
+	}
+
+
+
+	// var parseData = function(location_data, location_title){
+	// 	_parse_data = JSON.parse(location_data);
+
+	// 	if (_parse_data.pets){
+	// 		for (var i=0; i < _parse_data.pets.length; i++){
+	// 			_parse_data.pets[i].location = location_title;
+	// 			complete_data.push(_parse_data.pets[i]);
+	// 		}
+	// 	}
+	// 	else {
+	// 		console.log(''+ location_title +' no results');
+	// 	}
+
+	// 	total_locations_counter = total_locations_counter + 1;
+
+	// 	if (total_locations_counter == total_locations){
+	// 		console.log(complete_data);
+			
+	// 		// createFilters();
+	// 		formatData();
+	// 	}
+	// }
+
+
+
 
 
 	var formatData = function(){
@@ -149,7 +243,7 @@
 	}
 
 
-	var getDetails = function(url){
+	var showModal = function(url){
 		$.ajax({
 			type: 'post',
 			url: 'getData.php',
@@ -209,7 +303,6 @@
 	}
 
 	var createFilters = function(){
-
 		for (var i=0; i < complete_data.length; i++){
 			url = complete_data[i].details_url;
 
@@ -224,24 +317,79 @@
 				filter_set.species.push(data['pet']['species']);
 				filter_set.sex.push(data['pet']['sex']);
 				filter_set.age.push(data['pet']['age']);
-				filter_set.color.push(data['pet']['color']);
-				filter_set.breed.push(data['pet']['primary_breed']);
+
+				// temporary data processing
+				// filter_set.color.push(data['pet']['color']);
+				_color = data['pet']['color'].split(' ')[0];
+				_color = data['pet']['color'].split('- W')[0];
+				_color = data['pet']['color'].split('-')[0];
+				_color = data['pet']['color'].split('.')[0];
+				_color = data['pet']['color'].split(',')[0];
+				_color = data['pet']['color'].split('(')[0];
+				_color = data['pet']['color'].split('/')[0];
+
+				if (_color.length < 6){
+					filter_set.color.push(_color);
+				}
+
+				// filter_set.breed.push(data['pet']['primary_breed']);
+				_breed = data['pet']['primary_breed'].split(' ')[0];
+				_breed = data['pet']['primary_breed'].split('-')[0];
+				_breed = data['pet']['primary_breed'].split('.')[0];
+				_breed = data['pet']['primary_breed'].split(',')[0];
+				_breed = data['pet']['primary_breed'].split('(')[0];
+				_breed = data['pet']['primary_breed'].split('/')[0];
+				_breed = data['pet']['primary_breed'].split('(Unknown')[0];
+				filter_set.breed.push(_breed);
+
 
 				filter_count = filter_count + 1;
 
 				if (filter_count == complete_data.length){
-					_test = _.uniq(filter_set.color, false);
-					console.log(_test);
+					_filter_set.location = _.uniq(filter_set.location, false);
+					_filter_set.species = _.uniq(filter_set.species, false);
+					_filter_set.sex = _.uniq(filter_set.sex, false);
+					_filter_set.age = _.uniq(filter_set.age, false);
+					_filter_set.color = _.uniq(filter_set.color, false);
+					_filter_set.breed = _.uniq(filter_set.breed, false);
+
+					displayFilters();
 				}
 
 			}).fail(function(jqXHR, textStatus, errorThrown){
 				console.log('proxy or service failure');
 			});
-
 		}
 
-		
-		
+
+		var displayFilters = function(){
+			console.log(_filter_set);
+			//console.log(Object.keys(_filter_set).length);
+
+			for (var key in _filter_set){
+				if (_filter_set.hasOwnProperty(key)){
+					
+					//console.log(key);
+					//console.log(_filter_set[key].length);
+					//console.log(_filter_set[key]);
+
+					$('.controls').append('<ul class="filter_'+ key +'"></ul>');
+
+					for (var i=0; i < _filter_set[key].length; i++){
+						//console.log(_filter_set[key][i]);
+
+						$('.filter_'+ key +'').append('<li class="filter_'+ _filter_set[key][i] +'" data-filter="'+ _filter_set[key][i] +'" data_filter_applied="false">'+ _filter_set[key][i] +'</li>');
+						//$('.filter_'+ _filter_set[key][i] +'').click(function(){
+						//	$(this).attr('data_filter_applied', 'true');
+						//});
+					}
+				}
+			}
+
+			// formatData();
+		}
+
+
 		//console.log(filter_set);
 		//formatData();
 	}
