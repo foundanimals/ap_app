@@ -2,22 +2,22 @@
 	var ap = $('#ap_container');
 	var ap_content = $('#ap_content');
 
-	var ap_details = $('#pet_details');
-	var ap_details_close = $('#pet_details_close');
-	var ap_details_content = $('#pet_details_content');
-	var ap_details_name = $('.pet_details_name > span');
-	var ap_details_color = $('.pet_details_color > span');
-	var ap_details_species = $('.pet_details_species > span');
-	var ap_details_age = $('.pet_details_age > span');
-	var ap_details_sex = $('.pet_details_sex > span');
-	var ap_details_size = $('.pet_details_size > span');
-	var ap_details_hair = $('.pet_details_hair > span');
-	var ap_details_primary = $('.pet_details_primary > span');
-	var ap_details_primary_pure = $('.pet_details_pure > span');
-	var ap_details_secondary = $('.pet_details_secondary > span');
-	var ap_details_special_needs = $('.pet_details_special_needs > span');
-	var ap_details_city = $('.pet_details_city > span');
-	var ap_details_photos = $('.pet_details_photos');
+	var ap_modal = $('#ap_modal');
+	var ap_modal_close = $('#ap_modal_close');
+	var ap_modal_content = $('#ap_modal_content');
+	var ap_modal_name = $('.pet_details_name > span');
+	var ap_modal_color = $('.pet_details_color > span');
+	var ap_modal_species = $('.pet_details_species > span');
+	var ap_modal_age = $('.pet_details_age > span');
+	var ap_modal_sex = $('.pet_details_sex > span');
+	var ap_modal_size = $('.pet_details_size > span');
+	var ap_modal_hair = $('.pet_details_hair > span');
+	var ap_modal_primary = $('.pet_details_primary > span');
+	var ap_modal_primary_pure = $('.pet_details_pure > span');
+	var ap_modal_secondary = $('.pet_details_secondary > span');
+	var ap_modal_special_needs = $('.pet_details_special_needs > span');
+	var ap_modal_city = $('.pet_details_city > span');
+	var ap_modal_photos = $('.pet_details_photos');
 
 	var ap_range_start = $('.range_start');
 	var ap_range_end = $('.range_end');
@@ -29,11 +29,16 @@
 
 	var locations = [
 		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
+		
 		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
 		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
+		
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
 	];
 
 	var complete_data = [];
+	var _complete_data = [];
 
 	var filter_set = [];
 	filter_set.location = [];
@@ -43,16 +48,9 @@
 	filter_set.color = [];
 	filter_set.breed = [];
 
-	// _ filtered set
-	var _filter_set = [];
-	_filter_set.location = [];
-	_filter_set.species = [];
-	_filter_set.sex = [];
-	_filter_set.age = [];
-	_filter_set.color = [];
-	_filter_set.breed = [];
-
-
+	var filter_by = [];
+	//filter_by.color = ["White", "Red", "Black"];
+	filter_by.color = [];
 
 	var total_pets = 0;
 	var total_pets_i = 0;
@@ -62,17 +60,17 @@
 		ap.attr('class', '');
 
 		console.log('init apApp');
-		console.log(''+ locations.length +' locations');
+		console.log('apApp: '+ locations.length +' locations');
 
 		if (locations.length){
 			for (var i = 0; i < locations.length; i++){
 				getData(locations[i][0]);
 			}
 
-			console.log('init loop complete');
+			console.log('apApp: init complete');
 		}
 		else {
-			console.log('initApp: no locations or program error');
+			console.log('apApp: no locations or program error');
 		}
 	}
 
@@ -83,7 +81,7 @@
 			url: 'getData.php',
 			data: {data_url: url}
 		}).done(function(data, textStatus, jqXHR){
-			console.log('data received');
+			console.log('getData: data received');
 			getDetails(data);
 		}).fail(function(jqXHR, textStatus, errorThrown){
 			console.log('getData: proxy or service failure');
@@ -93,35 +91,39 @@
 
 	var getDetails = function(data){
 		data = JSON.parse(data);
-
 		total_pets = total_pets + data.returned_pets;
-		
-		console.log(total_pets);
+
+		console.log('getDetails: '+ total_pets +'');
 		//console.log(data);
 
 		if (data.pets){
-			for (var i=0; i < data.pets.length; i++){
-				console.log(data.pets[i].details_url);
+			for (var i = 0; i < data.pets.length; i++){
 				url = data.pets[i].details_url;
+				preview_image = [data.pets[i].results_photo_url, data.pets[i].results_photo_width, data.pets[i].results_photo_height];
 
-				$.ajax({
-					type: 'post',
-					url: 'getData.php',
-					data: {data_url: url}
-				}).done(function(data, textStatus, jqXHR){
-					data = JSON.parse(data);
-					//console.log(data.pet);
-					complete_data.push(data.pet);
+				(function(url, preview_image){
+					$.ajax({
+						type: 'post',
+						url: 'getData.php',
+						data: {data_url: url}
+					}).done(function(data, textStatus, jqXHR){
+						data = JSON.parse(data);
+						data.pet.preview_image = preview_image;
+						data.pet.details_url = url;
+						//console.log(data.pet);
 
-					total_pets_i = total_pets_i + 1;
-					if (total_pets_i == total_pets){
-						console.log('received all '+ total_pets +' pet details');
-						console.log(complete_data);
-						processData();
-					}
-				}).fail(function(jqXHR, textStatus, errorThrown){
-					console.log('getDetails: proxy or service failure');
-				});
+						complete_data.push(data.pet);
+
+						total_pets_i = total_pets_i + 1;
+						if (total_pets_i == total_pets){
+							console.log('getDetails: received all '+ total_pets +' pet details');
+							console.log(complete_data);
+							parseData();
+						}
+					}).fail(function(jqXHR, textStatus, errorThrown){
+						console.log('getDetails: proxy or service failure');
+					});
+				})(url, preview_image);
 			}
 		}
 		else {
@@ -129,91 +131,171 @@
 		}
 	}
 
-
-	var processData = function(){
-		console.log('processing data');
+	// this function needs to process complete_data and clean up fields
+	// also needs to generate a list of filterable qualities
+	var parseData = function(){
+		console.log('parseData');
 
 		for (var key in complete_data){
 			if (complete_data.hasOwnProperty(key)){
-				_color = complete_data[key].color.split(' ')[0];
-				_color = complete_data[key].color.split('- W')[0];
-				_color = complete_data[key].color.split('-')[0];
-				_color = complete_data[key].color.split('.')[0];
-				_color = complete_data[key].color.split(',')[0];
-				_color = complete_data[key].color.split('(')[0];
-				_color = complete_data[key].color.split('/')[0];
-				if (_color.length < 6){
-					filter_set.color.push(_color);
+				// clean up data in pet array
+				color = complete_data[key].color.split(' ')[0];
+				color = complete_data[key].color.split('- W')[0];
+				color = complete_data[key].color.split('-')[0];
+				color = complete_data[key].color.split('.')[0];
+				color = complete_data[key].color.split(',')[0];
+				color = complete_data[key].color.split('(')[0];
+				color = complete_data[key].color.split('/')[0];
+
+				breed = complete_data[key].primary_breed.split(' ')[0];
+				breed = complete_data[key].primary_breed.split('-')[0];
+				breed = complete_data[key].primary_breed.split('.')[0];
+				breed = complete_data[key].primary_breed.split(',')[0];
+				breed = complete_data[key].primary_breed.split('(')[0];
+				breed = complete_data[key].primary_breed.split('/')[0];
+				breed = complete_data[key].primary_breed.split('(Unknown')[0];
+				
+				// apply changes
+				complete_data[key].color = color;
+				complete_data[key].primary_breed = breed;
+
+				// set filter values
+				filter_set.location.push(complete_data[key].addr_city);
+				filter_set.species.push(complete_data[key].species);
+				filter_set.sex.push(complete_data[key].sex);
+				filter_set.age.push(complete_data[key].age);
+				if (color.length < 6){
+					filter_set.color.push(color);
 				}
-
-				_breed = complete_data[key].primary_breed.split(' ')[0];
-				_breed = complete_data[key].primary_breed.split('-')[0];
-				_breed = complete_data[key].primary_breed.split('.')[0];
-				_breed = complete_data[key].primary_breed.split(',')[0];
-				_breed = complete_data[key].primary_breed.split('(')[0];
-				_breed = complete_data[key].primary_breed.split('/')[0];
-				_breed = complete_data[key].primary_breed.split('(Unknown')[0];
-				filter_set.breed.push(_breed);
-
-				complete_data[key].color = _color;
-				complete_data[key].primary_breed = _breed;
+				filter_set.breed.push(breed);
 			}
 		}
 
-		//displayFilters();
+		// remove duplicates in filters
+		filter_set.location = _.uniq(filter_set.location, false);
+		filter_set.species = _.uniq(filter_set.species, false);
+		filter_set.sex = _.uniq(filter_set.sex, false);
+		filter_set.age = _.uniq(filter_set.age, false);
+		filter_set.color = _.uniq(filter_set.color, false);
+		filter_set.breed = _.uniq(filter_set.breed, false);
+
+		filters();
+		applyFilters();
+	}
+
+	var applyFilters = function(){
+		ap.removeClass('ready');
+		ap_content.html('');
+
+		filtered_colors = null;
+		_complete_data = complete_data;
+
+		// same filter
+		if (filter_by.color.length){
+			filtered_colors = _.filter(filter_set.color, function(a){
+				return _.find(filter_by.color, function(b){
+					return b === a;
+				});
+			});
+		}
+
+		// filter by color
+		if (filter_by.color.length){
+			_complete_data =_.filter(complete_data, function(a){
+				return _.find(filter_by.color, function(b){
+					return b === a.color;
+				});
+			});
+		}
+
+
+		console.log('applyFilters: filter array test, colors to filter by')
+		console.log(filtered_colors);
+
+		console.log('applyFilters: filter array test, complete_data');
+		//console.log(filtered_complete_data);
+
+		format();
 	}
 
 
+	var filters = function(){
+		console.log('filters');
+		//console.log(Object.keys(filter_set).length);
 
-	// var parseData = function(location_data, location_title){
-	// 	_parse_data = JSON.parse(location_data);
+		for (var key in filter_set){
+			if (filter_set.hasOwnProperty(key)){
+				
+				//console.log(key);
+				//console.log(_filter_set[key].length);
+				//console.log(_filter_set[key]);
 
-	// 	if (_parse_data.pets){
-	// 		for (var i=0; i < _parse_data.pets.length; i++){
-	// 			_parse_data.pets[i].location = location_title;
-	// 			complete_data.push(_parse_data.pets[i]);
-	// 		}
-	// 	}
-	// 	else {
-	// 		console.log(''+ location_title +' no results');
-	// 	}
+				$('.controls').append('<ul class="filter_'+ key +'" data-filter-group="'+ key +'"></ul>');
 
-	// 	total_locations_counter = total_locations_counter + 1;
+				for (var i = 0; i < filter_set[key].length; i++){
+					//console.log(_filter_set[key][i]);
 
-	// 	if (total_locations_counter == total_locations){
-	// 		console.log(complete_data);
-			
-	// 		// createFilters();
-	// 		formatData();
-	// 	}
-	// }
+					$('.filter_'+ key +'').append('<li class="filter_'+ filter_set[key][i] +'" data-filter="'+ filter_set[key][i] +'" data_filter_applied="false">'+ filter_set[key][i] +'</li>');
 
 
+					$('.filter_'+ filter_set[key][i] +'').click(function(){
+
+						parent_filter = $(this).parent().attr('data-filter-group');
+						filter = $(this).attr('data-filter');
+
+						console.log(''+ parent_filter +' > '+ filter +'');
+
+						console.log(parent_filter);
+
+						if (_.contains(_.pluck(filter_by[parent_filter]), filter)){
+
+							console.log('yay');
+						}
 
 
+						if (filter in filter_by[parent_filter]){
+							console.log('its there!');
+							filter_by[parent_filter].splice(filter, 1);
+						}
+						else {
+							filter_by[parent_filter].push(filter);
+							filter_by[parent_filter] = _.uniq(filter_by[parent_filter], false);
+						}
 
-	var formatData = function(){
-		if (complete_data.length){
-			total_count = complete_data.length;
+						console.log(filter_by[parent_filter]);
 
-			for (var i=0; i < complete_data.length; i++){
-				pet_id = 'pet_id_'+ complete_data[i].pet_id +'';
-				pet_url = complete_data[i].details_url;
+						applyFilters();
+					});
+				}
+			}
+		}
+	}
 
-				pet_location = complete_data[i].location;
 
-				pet_name = complete_data[i].pet_name.split(' ')[0];
+	var format = function(){
+		console.log('format');
+
+		if (_complete_data.length){
+			total_count = _complete_data.length;
+
+			for (var i = 0; i < _complete_data.length; i++){
+				pet_id = 'pet_id_'+ _complete_data[i].pet_id +'';
+				pet_url = _complete_data[i].details_url;
+
+				pet_location = _complete_data[i].addr_city;
+
+				pet_name = _complete_data[i].pet_name.split(' ')[0];
 				pet_name = pet_name.split('-')[0];
 				pet_name = pet_name.split('.')[0];
 				pet_name = pet_name.split(',')[0];
 
-				pet_age = complete_data[i].age;
+				pet_age = _complete_data[i].age;
 
-				pet_photo = complete_data[i].results_photo_url;
-				pet_photo_w = ''+ complete_data[i].results_photo_width +'px';
-				pet_photo_h = ''+ complete_data[i].results_photo_height +'px';
+				pet_photo = _complete_data[i].preview_image[0];
+				pet_photo_w = ''+ _complete_data[i].preview_image[1] +'px';
+				pet_photo_h = ''+ _complete_data[i].preview_image[2] +'px';
 
-				pet_sex = complete_data[i].sex;
+				pet_sex = _complete_data[i].sex;
 				if (pet_sex == 'm'){
 					pet_sex = 'Male'
 				}
@@ -226,8 +308,8 @@
 				ap_content.append(cellFormat);
 
 				$('#'+ pet_id +'').click(function(){
-					data_url = $(this).attr('data-pet-url');
-					getDetails(data_url);
+					url = $(this).attr('data-pet-url');
+					modal(url);
 				});
 			}
 			
@@ -236,48 +318,52 @@
 			ap.addClass('ready');
 		}
 		else {
-			console.log('there is no data');
+			console.log('format: there is no data');
 			ap_content.append('there is no data');
 			ap.addClass('ready');
 		}
 	}
 
 
-	var showModal = function(url){
+	var modal = function(url){
+		ap.attr('class', '');
+
 		$.ajax({
 			type: 'post',
 			url: 'getData.php',
 			data: {data_url: url}
 		}).done(function(data, textStatus, jqXHR){
 			data = JSON.parse(data);
+
+			console.log('modal');
 			console.log(data);
 
-			ap_details_name.html(data['pet']['pet_name']);
-			ap_details_color.html(data['pet']['color']);
-			ap_details_species.html(data['pet']['species']);
-			ap_details_age.html(data['pet']['age']);
-			ap_details_sex.html(data['pet']['sex']);
-			ap_details_size.html(data['pet']['size']);
-			ap_details_hair.html(data['pet']['hair_length']);
-			ap_details_primary.html(data['pet']['primary_breed']);
-			ap_details_primary_pure.html(data['pet']['purebred']);
-			ap_details_secondary.html(data['pet']['secondary_breed']);
-			ap_details_special_needs.html(data['pet']['special_needs']);
-			ap_details_city.html(data['pet']['addr_city']);
+			ap_modal_name.html(data['pet']['pet_name']);
+			ap_modal_color.html(data['pet']['color']);
+			ap_modal_species.html(data['pet']['species']);
+			ap_modal_age.html(data['pet']['age']);
+			ap_modal_sex.html(data['pet']['sex']);
+			ap_modal_size.html(data['pet']['size']);
+			ap_modal_hair.html(data['pet']['hair_length']);
+			ap_modal_primary.html(data['pet']['primary_breed']);
+			ap_modal_primary_pure.html(data['pet']['purebred']);
+			ap_modal_secondary.html(data['pet']['secondary_breed']);
+			ap_modal_special_needs.html(data['pet']['special_needs']);
+			ap_modal_city.html(data['pet']['addr_city']);
 
 
 			if (data['pet']['images']){
-				ap_details_photos.html('');
-				for (var i=0; i < data['pet']['images'].length; i++){
-					ap_details_photos.append('<img src="'+ data['pet']['images'][i]['original_url'] +'" />');
+				ap_modal_photos.html('');
+				for (var i = 0; i < data['pet']['images'].length; i++){
+					ap_modal_photos.append('<img src="'+ data['pet']['images'][i]['original_url'] +'" />');
 				}
 
-				for (var i=0; i < data['pet']['images'].length; i++){
-					ap_details_photos.append('<img src="'+ data['pet']['images'][i]['thumbnail_url'] +'" />');
+				for (var i = 0; i < data['pet']['images'].length; i++){
+					ap_modal_photos.append('<img src="'+ data['pet']['images'][i]['thumbnail_url'] +'" />');
 				}
 			}
 			else {
-				ap_details_photos.html('');
+				ap_modal_photos.html('');
 			}
 
 
@@ -291,109 +377,20 @@
 				}
 			});
 
-
+			ap.addClass('ready');
 			ap.addClass('details_active');
 
-			ap_details_close.click(function(){
+			ap_modal_close.click(function(){
 				ap.removeClass('details_active');
 			});
 		}).fail(function(jqXHR, textStatus, errorThrown){
-			console.log('proxy or service failure');
+			ap.addClass('ready');
+			console.log('modal: proxy or service failure');
+			alert('modal: proxy or service failure');
 		});
 	}
 
-	var createFilters = function(){
-		for (var i=0; i < complete_data.length; i++){
-			url = complete_data[i].details_url;
-
-			$.ajax({
-				type: 'post',
-				url: 'getData.php',
-				data: {data_url: url}
-			}).done(function(data, textStatus, jqXHR){
-				data = JSON.parse(data);
-				
-				filter_set.location.push(data['pet']['addr_city']);
-				filter_set.species.push(data['pet']['species']);
-				filter_set.sex.push(data['pet']['sex']);
-				filter_set.age.push(data['pet']['age']);
-
-				// temporary data processing
-				// filter_set.color.push(data['pet']['color']);
-				_color = data['pet']['color'].split(' ')[0];
-				_color = data['pet']['color'].split('- W')[0];
-				_color = data['pet']['color'].split('-')[0];
-				_color = data['pet']['color'].split('.')[0];
-				_color = data['pet']['color'].split(',')[0];
-				_color = data['pet']['color'].split('(')[0];
-				_color = data['pet']['color'].split('/')[0];
-
-				if (_color.length < 6){
-					filter_set.color.push(_color);
-				}
-
-				// filter_set.breed.push(data['pet']['primary_breed']);
-				_breed = data['pet']['primary_breed'].split(' ')[0];
-				_breed = data['pet']['primary_breed'].split('-')[0];
-				_breed = data['pet']['primary_breed'].split('.')[0];
-				_breed = data['pet']['primary_breed'].split(',')[0];
-				_breed = data['pet']['primary_breed'].split('(')[0];
-				_breed = data['pet']['primary_breed'].split('/')[0];
-				_breed = data['pet']['primary_breed'].split('(Unknown')[0];
-				filter_set.breed.push(_breed);
-
-
-				filter_count = filter_count + 1;
-
-				if (filter_count == complete_data.length){
-					_filter_set.location = _.uniq(filter_set.location, false);
-					_filter_set.species = _.uniq(filter_set.species, false);
-					_filter_set.sex = _.uniq(filter_set.sex, false);
-					_filter_set.age = _.uniq(filter_set.age, false);
-					_filter_set.color = _.uniq(filter_set.color, false);
-					_filter_set.breed = _.uniq(filter_set.breed, false);
-
-					displayFilters();
-				}
-
-			}).fail(function(jqXHR, textStatus, errorThrown){
-				console.log('proxy or service failure');
-			});
-		}
-
-
-		var displayFilters = function(){
-			console.log(_filter_set);
-			//console.log(Object.keys(_filter_set).length);
-
-			for (var key in _filter_set){
-				if (_filter_set.hasOwnProperty(key)){
-					
-					//console.log(key);
-					//console.log(_filter_set[key].length);
-					//console.log(_filter_set[key]);
-
-					$('.controls').append('<ul class="filter_'+ key +'"></ul>');
-
-					for (var i=0; i < _filter_set[key].length; i++){
-						//console.log(_filter_set[key][i]);
-
-						$('.filter_'+ key +'').append('<li class="filter_'+ _filter_set[key][i] +'" data-filter="'+ _filter_set[key][i] +'" data_filter_applied="false">'+ _filter_set[key][i] +'</li>');
-						//$('.filter_'+ _filter_set[key][i] +'').click(function(){
-						//	$(this).attr('data_filter_applied', 'true');
-						//});
-					}
-				}
-			}
-
-			// formatData();
-		}
-
-
-		//console.log(filter_set);
-		//formatData();
-	}
-
+	
 	// init application
 	initApp();
 

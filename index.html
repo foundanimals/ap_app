@@ -23,16 +23,17 @@
             }
 
             #ap_loading {
-                position: absolute;
+                position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
+                height: 100%;
                 color: #fff;
                 font-size: 18px;
                 text-align: center;
-                padding-top: 10%;
-                padding-bottom: 10%;
-                background: #30778B;
+                padding-top: 11%;
+                padding-bottom: 11%;
+                background: rgba(49, 120, 140, 0.7);
                 z-index: 100;
             }
             .ready #ap_loading {
@@ -227,7 +228,7 @@
 
             
 
-            #pet_details {
+            #ap_modal {
                 display: none;
                 position: fixed;
                 top: 5%;
@@ -237,11 +238,11 @@
                 border-radius: 7px;
                 z-index: 150;
             }
-            .details_active #pet_details {
+            .details_active #ap_modal {
                 display: block;
             }
 
-            #pet_details_mask {
+            #ap_modal_mask {
                 display: none;
                 position: fixed;
                 top: 0;
@@ -251,11 +252,11 @@
                 background: rgba(255, 255, 255, 0.5);
                 z-index: 100;
             }
-            .details_active #pet_details_mask {
+            .details_active #ap_modal_mask {
                 display: block;
             }
 
-            #pet_details_close {
+            #ap_modal_close {
                 position: absolute;
                 top: -3%;
                 right: -3%;
@@ -266,22 +267,22 @@
                 cursor: pointer;
             }
 
-            #pet_details .pet_details_body {
+            #ap_modal #ap_modal_body {
                 overflow: hidden;
                 margin: 1%;
                 background: #fff;
                 border-radius: 4px;
             }
 
-            #pet_details .pet_details_body .pet_details_content {
+            #ap_modal .ap_modal_body #ap_modal_content {
                 padding: 2%;
             }
 
-            #pet_details_content div.no-value {
+            #ap_modal_content div.no-value {
                 color: red !important;
             }
 
-            #pet_details_content .pet_details_pure {
+            #ap_modal_content .pet_details_pure {
                 display: inline-block;
             }
         </style>
@@ -289,15 +290,15 @@
     <body>
 
         <div id="ap_container">
-            <div id="pet_details_mask"></div>
+            <div id="ap_modal_mask"></div>
 
-            <div id="pet_details">
-                <div id="pet_details_close">
+            <div id="ap_modal">
+                <div id="ap_modal_close">
                     close
                 </div>
 
-                <div class="pet_details_body">
-                    <div id="pet_details_content">
+                <div id="ap_modal_body">
+                    <div id="ap_modal_content">
                         <div class="pet_details_name">Name: <span></span></div>
                         <div class="pet_details_color">Color: <span></span></div>
                         <div class="pet_details_species">Species: <span></span></div>

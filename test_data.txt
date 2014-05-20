@@ -1,3 +1,34 @@
+{ "pet" : { "act_quickly" : "0",
+      "addr_city" : "West Hollywood",
+      "addr_state_code" : "CA",
+      "age" : "Young",
+      "automap" : "1",
+      "color" : "Brindle",
+      "hair_length" : null,
+      "images" : [ { "original_height" : 329,
+            "original_url" : "https://s3.amazonaws.com/pet-uploads.adoptapet.com/2/2/7/107132755.jpg?336w",
+            "original_width" : 220,
+            "thumbnail_height" : 187,
+            "thumbnail_url" : "https://s3.amazonaws.com/pet-uploads.adoptapet.com/0/0/f/107629302.jpg",
+            "thumbnail_width" : 125
+          } ],
+      "pet_code" : "6021444",
+      "pet_details_url" : "http://www.adoptapet.com/pet/9449389-west-hollywood-california-american-staffordshire-terrier-mix",
+      "pet_id" : "9449389",
+      "pet_name" : "Axl. He is the DUDE! Videos.",
+      "primary_breed" : "American Staffordshire Terrier",
+      "purebred" : "0",
+      "secondary_breed" : "Rottweiler",
+      "sex" : "Male",
+      "size" : "Large 61-100 lbs (28-45 kg)",
+      "special_needs" : "0",
+      "species" : "Dog"
+    },
+  "status" : "ok"
+}
+
+
+
 {
    "returned_pets":33,
    "pets":[
