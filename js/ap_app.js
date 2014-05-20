@@ -131,6 +131,267 @@
 		}
 	}
 
+	var returnColors = function(string){
+		switch(string){
+			// dog colors
+			case 'Black':
+				color = ['black'];
+				console.log(string);
+				return color;
+				break;
+			case 'Black - With Brown, Red, Golden, Orange Or Chestnut':
+				color = ['black', 'brown', 'red', 'golden', 'orange', 'chestnut'];
+				console.log(string);
+				return color;
+				break;
+			case 'Black - with Gray or Silver':
+				color = ['black', 'gray', 'silver'];
+				console.log(string);
+				return color;
+				break;
+			case 'Black - with Tan, Yellow or Fawn':
+				color = ['black', 'tan', 'yellow', 'fawn'];
+				console.log(string);
+				return color;
+				break;
+			case 'Black - with White':
+				color = ['black', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brindle':
+				color = ['brindle'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brindle - With White':
+				color = ['brindle', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown/Chocolate':
+				color = ['brown', 'chocolate'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown/Chocolate - With Black':
+				color = ['brown', 'chocolate', 'black'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown/Chocolate - With Tan':
+				color = ['brown', 'chocolate', 'tan'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown/Chocolate - With White':
+				color = ['brown', 'chocolate', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'Gray/Blue/Silver/Salt & Pepper':
+				color = ['gray', 'blue', 'silver', 'salt&pepper'];
+				console.log(string);
+				return color;
+				break;
+			case 'Gray/Silver/Salt & Pepper - With White':
+				color = ['gray', 'silver', 'salt&pepper', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'Merle':
+				color = ['merle'];
+				console.log(string);
+				return color;
+				break;
+			case 'Red/Golden/Orange/Chestnut':
+				color = ['red', 'golden', 'orange', 'chestnut'];
+				console.log(string);
+				return color;
+				break;
+			case 'Red/Golden/Orange/Chestnut - With Black':
+				color = ['red', 'golden', 'orange', 'chestnut', 'black'];
+				console.log(string);
+				return color;
+				break;
+			case 'Red/Golden/Orange/Chestnut - With White':
+				color = ['red', 'golden', 'orange', 'chestnut', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'Silver & Tan (Yorkie colors)':
+				color = ['silver', 'tan'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tan/Yellow/Fawn':
+				color = ['tan', 'yellow', 'fawn'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tan/Yellow/Fawn - With Black':
+				color = ['tan', 'yellow', 'fawn', 'black'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tan/Yellow/Fawn - With White':
+				color = ['tan', 'yellow', 'fawn', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tricolor (Tan/Brown & Black & White)':
+				color = ['tan', 'brown', 'black', 'white'];
+				console.log(string);
+				return color;
+				break;
+			case 'White':
+				color = ['white'];
+				console.log(string);
+				return color;
+				break;
+			case 'White - With Black':
+				color = ['white', 'black'];
+				console.log(string);
+				return color;
+				break;
+			case 'White - With Brown Or Chocolate':
+				color = ['white', 'brown', 'chocolate'];
+				console.log(string);
+				return color;
+				break;
+			case 'White - With Gray or Silver':
+				color = ['white', 'gray', 'silver'];
+				console.log(string);
+				return color;
+				break;
+			case 'White - With Red, Golden, Orange Or Chestnut':
+				color = ['white', 'red', 'golden', 'orange', 'chestnut'];
+				console.log(string);
+				return color;
+				break;
+			case 'White - With Tan, Yellow Or Fawn':
+				color = ['white', 'tan', 'yellow', 'fawn'];
+				console.log(string);
+				return color;
+				break;
+			// cat colors
+			case 'Black & White or Tuxedo':
+				color = ['black', 'white', 'tuxedo'];
+				console.log(string);
+				return color;
+				break;
+			case 'Black (All)':
+				color = ['black'];
+				console.log(string);
+				return color;
+				break;
+			case 'Black (Mostly)':
+				color = ['black'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown Tabby':
+				color = ['brown'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown or Chocolate':
+				color = ['brown', 'chocolate'];
+				console.log(string);
+				return color;
+				break;
+			case 'Brown or Chocolate (Mostly)':
+				color = ['brown', 'chocolate'];
+				console.log(string);
+				return color;
+				break;
+			case 'Calico or Dilute Calico':
+				color = ['calico'];
+				console.log(string);
+				return color;
+				break;
+			case 'Cream or Ivory':
+				color = ['cream', 'ivory'];
+				console.log(string);
+				return color;
+				break;
+			case 'Cream or Ivory (Mostly)':
+				color = ['cream', 'ivory'];
+				console.log(string);
+				return color;
+				break;
+			case 'Gray or Blue':
+				color = ['gray', 'blue'];
+				console.log(string);
+				return color;
+				break;
+			case 'Gray or Blue (Mostly)':
+				color = ['gray', 'blue'];
+				console.log(string);
+				return color;
+				break;
+			case 'Gray, Blue or Silver Tabby':
+				color = ['gray', 'blue', 'silver', 'tabby'];
+				console.log(string);
+				return color;
+				break;
+			case 'Orange or Red':
+				color = ['orange', 'red'];
+				console.log(string);
+				return color;
+				break;
+			case 'Orange or Red (Mostly)':
+				color = ['orange', 'red'];
+				console.log(string);
+				return color;
+				break;
+			case 'Orange or Red Tabby':
+				color = ['orange', 'red', 'tabby'];
+				console.log(string);
+				return color;
+				break;
+			case 'Spotted Tabby/Leopard Spotted':
+				color = ['tabby', 'leopard'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tan or Fawn':
+				color = ['tan', 'fawn'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tan or Fawn (Mostly)':
+				color = ['tan', 'fawn'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tan or Fawn Tabby':
+				color = ['tan', 'fawn', 'tabby'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tiger Striped':
+				color = ['striped'];
+				console.log(string);
+				return color;
+				break;
+			case 'Tortoiseshell':
+				color = ['tortoiseshell'];
+				console.log(string);
+				return color;
+				break;
+			case 'White (Mostly)':
+				color = ['white'];
+				console.log(string);
+				return color;
+				break;
+
+			default:
+				console.log(string);
+				break;
+		}
+	}
+
 	// this function needs to process complete_data and clean up fields
 	// also needs to generate a list of filterable qualities
 	var parseData = function(){
@@ -138,14 +399,10 @@
 
 		for (var key in complete_data){
 			if (complete_data.hasOwnProperty(key)){
+
 				// clean up data in pet array
-				color = complete_data[key].color.split(' ')[0];
-				color = complete_data[key].color.split('- W')[0];
-				color = complete_data[key].color.split('-')[0];
-				color = complete_data[key].color.split('.')[0];
-				color = complete_data[key].color.split(',')[0];
-				color = complete_data[key].color.split('(')[0];
-				color = complete_data[key].color.split('/')[0];
+				color = returnColors(complete_data[key].color);
+				console.log(color);
 
 				breed = complete_data[key].primary_breed.split(' ')[0];
 				breed = complete_data[key].primary_breed.split('-')[0];
@@ -164,9 +421,11 @@
 				filter_set.species.push(complete_data[key].species);
 				filter_set.sex.push(complete_data[key].sex);
 				filter_set.age.push(complete_data[key].age);
-				if (color.length < 6){
-					filter_set.color.push(color);
+				
+				for (var i_color = 0; i_color < color.length; i_color++){
+					filter_set.color.push(color[i_color]);
 				}
+
 				filter_set.breed.push(breed);
 			}
 		}
