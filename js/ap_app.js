@@ -30,11 +30,11 @@
 	var locations = [
 		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
 		
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
+		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
+		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
 		
-		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
-		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
 	];
 
 	var complete_data = [];
@@ -56,13 +56,16 @@
 	var total_pets_i = 0;
 
 
+	/* inits app, gets count of locations,
+	** 'locations' count used as a trigger to ensure all data is retrieved before getting details
+	*/
 	var initApp = function(){
 		ap.attr('class', '');
 
 		console.log('init apApp');
 		console.log('apApp: '+ locations.length +' locations');
 
-		if (locations.length){
+		if (locations.length > 0){
 			for (var i = 0; i < locations.length; i++){
 				getData(locations[i][0]);
 			}
@@ -75,6 +78,8 @@
 	}
 
 
+	/* grabs general listing from API
+	*/
 	var getData = function(url){
 		$.ajax({
 			type: 'post',
@@ -88,7 +93,10 @@
 		});
 	}
 
-
+	/* uses general listing to retrieved detailed info,
+	** some variables are pushed into the details array,
+	** adds details to 'complete_data'
+	*/
 	var getDetails = function(data){
 		data = JSON.parse(data);
 		total_pets = total_pets + data.returned_pets;
@@ -107,23 +115,21 @@
 						url: 'getData.php',
 						data: {data_url: url}
 					}).done(function(data, textStatus, jqXHR){
+						// rebuild some data
 						data = JSON.parse(data);
 						data.pet.preview_image = preview_image;
 						data.pet.details_url = url;
-
 						data.pet.color_array = data.pet.color.toLowerCase();
 						data.pet.color_array = returnColors(data.pet.color_array);
-
 						data.pet.location = [data.pet.addr_city];
-
-						//console.log(data.pet);
 
 						complete_data.push(data.pet);
 
+						// this counter confirms that all location data has been retrieved
 						total_pets_i = total_pets_i + 1;
 						if (total_pets_i == total_pets){
 							console.log('getDetails: received all '+ total_pets +' pet details');
-							console.log(complete_data);
+							// console.log(complete_data);
 							parseData();
 						}
 					}).fail(function(jqXHR, textStatus, errorThrown){
@@ -132,277 +138,13 @@
 				})(url, preview_image);
 			}
 
-			console.log(complete_data);
+			// console.log(complete_data);
 		}
 		else {
 			console.log('getDetails: there is no data');
 		}
 	}
 
-
-
-
-	var returnColors = function(string){
-		switch(string){
-			// dog colors
-			case 'black':
-				color = ['black'];
-				console.log(string);
-				return color;
-				break;
-			case 'black - with brown, red, golden, orange or chestnut':
-				color = ['black', 'brown', 'red', 'golden', 'orange', 'chestnut'];
-				console.log(string);
-				return color;
-				break;
-			case 'black - with gray or silver':
-				color = ['black', 'gray', 'silver'];
-				console.log(string);
-				return color;
-				break;
-			case 'black - with tan, yellow or fawn':
-				color = ['black', 'tan', 'yellow', 'fawn'];
-				console.log(string);
-				return color;
-				break;
-			case 'black - with white':
-				color = ['black', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'brindle':
-				color = ['brindle'];
-				console.log(string);
-				return color;
-				break;
-			case 'brindle - with white':
-				color = ['brindle', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown/chocolate':
-				color = ['brown', 'chocolate'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown/chocolate - with black':
-				color = ['brown', 'chocolate', 'black'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown/chocolate - with tan':
-				color = ['brown', 'chocolate', 'tan'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown/chocolate - with white':
-				color = ['brown', 'chocolate', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'gray/blue/silver/salt & pepper':
-				color = ['gray', 'blue', 'silver', 'salt pepper'];
-				console.log(string);
-				return color;
-				break;
-			case 'gray/silver/salt & pepper - with white':
-				color = ['gray', 'silver', 'salt pepper', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'merle':
-				color = ['merle'];
-				console.log(string);
-				return color;
-				break;
-			case 'red/golden/orange/chestnut':
-				color = ['red', 'golden', 'orange', 'chestnut'];
-				console.log(string);
-				return color;
-				break;
-			case 'red/golden/orange/chestnut - with black':
-				color = ['red', 'golden', 'orange', 'chestnut', 'black'];
-				console.log(string);
-				return color;
-				break;
-			case 'red/golden/orange/chestnut - with white':
-				color = ['red', 'golden', 'orange', 'chestnut', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'silver & tan (yorkie colors)':
-				color = ['silver', 'tan'];
-				console.log(string);
-				return color;
-				break;
-			case 'tan/yellow/fawn':
-				color = ['tan', 'yellow', 'fawn'];
-				console.log(string);
-				return color;
-				break;
-			case 'tan/yellow/fawn - with black':
-				color = ['tan', 'yellow', 'fawn', 'black'];
-				console.log(string);
-				return color;
-				break;
-			case 'tan/yellow/fawn - with white':
-				color = ['tan', 'yellow', 'fawn', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'tricolor (tan/brown & black & white)':
-				color = ['tan', 'brown', 'black', 'white'];
-				console.log(string);
-				return color;
-				break;
-			case 'white':
-				color = ['white'];
-				console.log(string);
-				return color;
-				break;
-			case 'white - with black':
-				color = ['white', 'black'];
-				console.log(string);
-				return color;
-				break;
-			case 'white - with brown or chocolate':
-				color = ['white', 'brown', 'chocolate'];
-				console.log(string);
-				return color;
-				break;
-			case 'white - with gray or silver':
-				color = ['white', 'gray', 'silver'];
-				console.log(string);
-				return color;
-				break;
-			case 'white - with red, golden, orange or chestnut':
-				color = ['white', 'red', 'golden', 'orange', 'chestnut'];
-				console.log(string);
-				return color;
-				break;
-			case 'white - with tan, yellow or fawn':
-				color = ['white', 'tan', 'yellow', 'fawn'];
-				console.log(string);
-				return color;
-				break;
-			// cat colors
-			case 'black & white or tuxedo':
-				color = ['black', 'white', 'tuxedo'];
-				console.log(string);
-				return color;
-				break;
-			case 'black (all)':
-				color = ['black'];
-				console.log(string);
-				return color;
-				break;
-			case 'black (mostly)':
-				color = ['black'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown tabby':
-				color = ['brown'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown or chocolate':
-				color = ['brown', 'chocolate'];
-				console.log(string);
-				return color;
-				break;
-			case 'brown or chocolate (mostly)':
-				color = ['brown', 'chocolate'];
-				console.log(string);
-				return color;
-				break;
-			case 'calico or dilute calico':
-				color = ['calico'];
-				console.log(string);
-				return color;
-				break;
-			case 'cream or ivory':
-				color = ['cream', 'ivory'];
-				console.log(string);
-				return color;
-				break;
-			case 'cream or ivory (mostly)':
-				color = ['cream', 'ivory'];
-				console.log(string);
-				return color;
-				break;
-			case 'gray or blue':
-				color = ['gray', 'blue'];
-				console.log(string);
-				return color;
-				break;
-			case 'gray or blue (mostly)':
-				color = ['gray', 'blue'];
-				console.log(string);
-				return color;
-				break;
-			case 'gray, blue or silver tabby':
-				color = ['gray', 'blue', 'silver', 'tabby'];
-				console.log(string);
-				return color;
-				break;
-			case 'orange or red':
-				color = ['orange', 'red'];
-				console.log(string);
-				return color;
-				break;
-			case 'orange or red (mostly)':
-				color = ['orange', 'red'];
-				console.log(string);
-				return color;
-				break;
-			case 'orange or red tabby':
-				color = ['orange', 'red', 'tabby'];
-				console.log(string);
-				return color;
-				break;
-			case 'spotted tabby/leopard spotted':
-				color = ['tabby', 'leopard'];
-				console.log(string);
-				return color;
-				break;
-			case 'tan or fawn':
-				color = ['tan', 'fawn'];
-				console.log(string);
-				return color;
-				break;
-			case 'tan or fawn (mostly)':
-				color = ['tan', 'fawn'];
-				console.log(string);
-				return color;
-				break;
-			case 'tan or fawn tabby':
-				color = ['tan', 'fawn', 'tabby'];
-				console.log(string);
-				return color;
-				break;
-			case 'tiger striped':
-				color = ['striped'];
-				console.log(string);
-				return color;
-				break;
-			case 'tortoiseshell':
-				color = ['tortoiseshell'];
-				console.log(string);
-				return color;
-				break;
-			case 'white (mostly)':
-				color = ['white'];
-				console.log(string);
-				return color;
-				break;
-
-			default:
-				color = [];
-				console.log(string);
-				break;
-		}
-	}
 
 	var returnBreed = function(string){
 		switch(string){
@@ -418,31 +160,24 @@
 		}
 	}
 
-	// this function needs to process complete_data and clean up fields
-	// also needs to generate a list of filterable qualities
+
+	/* This function iterates over complete_data and produces filters
+	*/
 	var parseData = function(){
 		console.log('parseData');
 
 		for (var key in complete_data){
 			if (complete_data.hasOwnProperty(key)){
 
-				// clean up data in pet array
-				color = complete_data[key].color.toLowerCase();
-				color = returnColors(color);
-				console.log(color);
-
-				breed = complete_data[key].primary_breed;
-				console.log(breed);
+				// clean up data string
+				// run through color array function
+				color = complete_data[key].color_array;
 				
-				// apply changes
-				complete_data[key].color = color;
-				complete_data[key].primary_breed = breed;
-
 				// push filter values
-				for (var i_color = 0; i_color < color.length; i_color++){
-					filter_set.color.push(color[i_color].toLowerCase());
+				for (var i = 0; i < color.length; i++){
+					filter_set.color.push(color[i].toLowerCase());
 				}
-				filter_set.breed.push(breed);
+				filter_set.breed.push(complete_data[key].primary_breed);
 				filter_set.location.push(complete_data[key].addr_city);
 				filter_set.species.push(complete_data[key].species);
 				filter_set.sex.push(complete_data[key].sex);
@@ -459,83 +194,6 @@
 		filter_set.breed = _.uniq(filter_set.breed, false);
 
 		filters();
-		applyFilters();
-	}
-
-
-	var applyFilters = function(){
-		ap_content.html('');
-
-		_complete_data = [];
-
-		filter_count = 0;
-
-		if (filter_by.location.length > 0){
-			filter_count = filter_count + 1;
-		}
-		if (filter_by.color.length > 0){
-			filter_count = filter_count + 1;
-		}
-
-
-		for (var i = 0; i < complete_data.length; i++){
-			_filter_count = 0;
-			
-			for (var _i = 0; _i < complete_data[i].location.length; _i++){
-				if (isInArray(complete_data[i].location[_i], filter_by.location)){
-
-					_filter_count = _filter_count + 1;
-				}
-			}
-
-			for (var __i = 0; __i < complete_data[i].color_array.length; __i++){
-
-				if (isInArray(complete_data[i].color_array[__i], filter_by.color)){
-
-					_filter_count = _filter_count + 1;
-				}
-			}
-
-			if (_filter_count === filter_count){
-				_complete_data.push(complete_data[i]);
-			}
-		}
-
-
-
-		// if (filter_by.location.length > 0){
-		// 	for (var i = 0; i < complete_data.length; i++){
-
-		// 		for (var _i = 0; _i < complete_data[i].location.length; _i++){
-
-		// 			if (isInArray(complete_data[i].location[_i], filter_by.location)){
-		// 				_complete_data.push(complete_data[i]);
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		// if (filter_by.color.length > 0){
-		// 	for (var i = 0; i < complete_data.length; i++){
-
-		// 		for (var _i = 0; _i < complete_data[i].color_array.length; _i++){
-
-		// 			if (isInArray(complete_data[i].color_array[_i], filter_by.color)){
-		// 				_complete_data.push(complete_data[i]);
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		
-
-		_complete_data = _.uniq(_complete_data, false);
-
-		console.log('applyFilters: filters parsed');
-		// console.log(_complete_data);
-
-		format();
-		ap.addClass('ready');
 	}
 
 
@@ -576,8 +234,8 @@
 							$(this).removeClass('active');
 							$(this).attr('data-filter-applied', 'false');
 							
-							console.log('duplicate');
-							console.log(filter_by);
+							//console.log('duplicate');
+							//console.log(filter_by);
 						}
 						else {
 							filter_by[parent_filter].push(filter);
@@ -586,31 +244,68 @@
 							$(this).addClass('active');
 							$(this).attr('data-filter-applied', 'true');
 							
-							console.log('original');
-							console.log(filter_by);
+							//console.log('original');
+							//console.log(filter_by);
 						}
-
-						ap.attr('class', '');
-						applyFilters();
 					});
 				}
 			}
 		}
+
+		ap.attr('class', '');
+		applyFilters();
 	}
 
 
-	function isInArray(value, array) {
-  		return array.indexOf(value) > -1;
-	}
+	var applyFilters = function(){
+		ap_content.html('');
 
-	function removeArrayItem(array, item){
-		for (var i in array){
-			if (array[i] == item){
-				array.splice(i, 1);
-				break;
+		_complete_data = [];
+
+		filter_count = 0;
+
+		if (filter_by.location.length > 0){
+			filter_count = filter_count + 1;
+		}
+		if (filter_by.color.length > 0){
+			filter_count = filter_count + 1;
+		}
+
+
+		for (var i = 0; i < complete_data.length; i++){
+			_filter_count = 0;
+			
+			for (var _i = 0; _i < complete_data[i].location.length; _i++){
+				if (isInArray(complete_data[i].location[_i], filter_by.location)){
+					_filter_count = _filter_count + 1;
+				}
+			}
+
+			for (var __i = 0; __i < complete_data[i].color_array.length; __i++){
+
+				if (isInArray(complete_data[i].color_array[__i], filter_by.color)){
+					_filter_count = _filter_count + 1;
+				}
+			}
+
+			if (_filter_count === filter_count){
+				_complete_data.push(complete_data[i]);
 			}
 		}
+
+		_complete_data = _.uniq(_complete_data, false);
+
+		console.log('applyFilters: filters parsed');
+		// console.log(_complete_data);
+
+		format();
 	}
+
+
+
+
+
+
 
 
 	var format = function(){
@@ -729,6 +424,238 @@
 			console.log('modal: proxy or service failure');
 			alert('modal: proxy or service failure');
 		});
+	}
+
+
+	// utility function to check if value is in array
+	function isInArray(value, array) {
+  		return array.indexOf(value) > -1;
+	}
+
+	// utility function to remove array items
+	function removeArrayItem(array, item){
+		for (var i in array){
+			if (array[i] == item){
+				array.splice(i, 1);
+				break;
+			}
+		}
+	}
+
+
+
+
+	/* this function takes a string input and replaces it with a sortable array
+	*/
+	var returnColors = function(string){
+		switch(string){
+			// dog colors
+			case 'black':
+				color = ['black'];
+				return color;
+				break;
+			case 'black - with brown, red, golden, orange or chestnut':
+				color = ['black', 'brown', 'red', 'golden', 'orange', 'chestnut'];
+				return color;
+				break;
+			case 'black - with gray or silver':
+				color = ['black', 'gray', 'silver'];
+				return color;
+				break;
+			case 'black - with tan, yellow or fawn':
+				color = ['black', 'tan', 'yellow', 'fawn'];
+				return color;
+				break;
+			case 'black - with white':
+				color = ['black', 'white'];
+				return color;
+				break;
+			case 'brindle':
+				color = ['brindle'];
+				return color;
+				break;
+			case 'brindle - with white':
+				color = ['brindle', 'white'];
+				return color;
+				break;
+			case 'brown/chocolate':
+				color = ['brown', 'chocolate'];
+				return color;
+				break;
+			case 'brown/chocolate - with black':
+				color = ['brown', 'chocolate', 'black'];
+				return color;
+				break;
+			case 'brown/chocolate - with tan':
+				color = ['brown', 'chocolate', 'tan'];
+				return color;
+				break;
+			case 'brown/chocolate - with white':
+				color = ['brown', 'chocolate', 'white'];
+				return color;
+				break;
+			case 'gray/blue/silver/salt & pepper':
+				color = ['gray', 'blue', 'silver', 'salt pepper'];
+				return color;
+				break;
+			case 'gray/silver/salt & pepper - with white':
+				color = ['gray', 'silver', 'salt pepper', 'white'];
+				return color;
+				break;
+			case 'merle':
+				color = ['merle'];
+				return color;
+				break;
+			case 'red/golden/orange/chestnut':
+				color = ['red', 'golden', 'orange', 'chestnut'];
+				return color;
+				break;
+			case 'red/golden/orange/chestnut - with black':
+				color = ['red', 'golden', 'orange', 'chestnut', 'black'];
+				return color;
+				break;
+			case 'red/golden/orange/chestnut - with white':
+				color = ['red', 'golden', 'orange', 'chestnut', 'white'];
+				return color;
+				break;
+			case 'silver & tan (yorkie colors)':
+				color = ['silver', 'tan'];
+				return color;
+				break;
+			case 'tan/yellow/fawn':
+				color = ['tan', 'yellow', 'fawn'];
+				return color;
+				break;
+			case 'tan/yellow/fawn - with black':
+				color = ['tan', 'yellow', 'fawn', 'black'];
+				return color;
+				break;
+			case 'tan/yellow/fawn - with white':
+				color = ['tan', 'yellow', 'fawn', 'white'];
+				return color;
+				break;
+			case 'tricolor (tan/brown & black & white)':
+				color = ['tan', 'brown', 'black', 'white'];
+				return color;
+				break;
+			case 'white':
+				color = ['white'];
+				return color;
+				break;
+			case 'white - with black':
+				color = ['white', 'black'];
+				return color;
+				break;
+			case 'white - with brown or chocolate':
+				color = ['white', 'brown', 'chocolate'];
+				return color;
+				break;
+			case 'white - with gray or silver':
+				color = ['white', 'gray', 'silver'];
+				return color;
+				break;
+			case 'white - with red, golden, orange or chestnut':
+				color = ['white', 'red', 'golden', 'orange', 'chestnut'];
+				return color;
+				break;
+			case 'white - with tan, yellow or fawn':
+				color = ['white', 'tan', 'yellow', 'fawn'];
+				return color;
+				break;
+			// cat colors
+			case 'black & white or tuxedo':
+				color = ['black', 'white', 'tuxedo'];
+				return color;
+				break;
+			case 'black (all)':
+				color = ['black'];
+				return color;
+				break;
+			case 'black (mostly)':
+				color = ['black'];
+				return color;
+				break;
+			case 'brown tabby':
+				color = ['brown'];
+				return color;
+				break;
+			case 'brown or chocolate':
+				color = ['brown', 'chocolate'];
+				return color;
+				break;
+			case 'brown or chocolate (mostly)':
+				color = ['brown', 'chocolate'];
+				return color;
+				break;
+			case 'calico or dilute calico':
+				color = ['calico'];
+				return color;
+				break;
+			case 'cream or ivory':
+				color = ['cream', 'ivory'];
+				return color;
+				break;
+			case 'cream or ivory (mostly)':
+				color = ['cream', 'ivory'];
+				return color;
+				break;
+			case 'gray or blue':
+				color = ['gray', 'blue'];
+				return color;
+				break;
+			case 'gray or blue (mostly)':
+				color = ['gray', 'blue'];
+				return color;
+				break;
+			case 'gray, blue or silver tabby':
+				color = ['gray', 'blue', 'silver', 'tabby'];
+				return color;
+				break;
+			case 'orange or red':
+				color = ['orange', 'red'];
+				return color;
+				break;
+			case 'orange or red (mostly)':
+				color = ['orange', 'red'];
+				return color;
+				break;
+			case 'orange or red tabby':
+				color = ['orange', 'red', 'tabby'];
+				return color;
+				break;
+			case 'spotted tabby/leopard spotted':
+				color = ['tabby', 'leopard'];
+				return color;
+				break;
+			case 'tan or fawn':
+				color = ['tan', 'fawn'];
+				return color;
+				break;
+			case 'tan or fawn (mostly)':
+				color = ['tan', 'fawn'];
+				return color;
+				break;
+			case 'tan or fawn tabby':
+				color = ['tan', 'fawn', 'tabby'];
+				return color;
+				break;
+			case 'tiger striped':
+				color = ['striped'];
+				return color;
+				break;
+			case 'tortoiseshell':
+				color = ['tortoiseshell'];
+				return color;
+				break;
+			case 'white (mostly)':
+				color = ['white'];
+				return color;
+				break;
+
+			default:
+				color = [];
+				break;
+		}
 	}
 
 	
