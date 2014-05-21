@@ -30,11 +30,11 @@
 	var locations = [
 		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
 		
-		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
-		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
 		
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
+		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
+		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
 	];
 
 	var complete_data = [];
@@ -49,8 +49,8 @@
 	filter_set.breed = [];
 
 	var filter_by = [];
-	//filter_by.color = ["White", "Red", "Black"];
 	filter_by.color = [];
+	filter_by.location = [];
 
 	var total_pets = 0;
 	var total_pets_i = 0;
@@ -114,6 +114,8 @@
 						data.pet.color_array = data.pet.color.toLowerCase();
 						data.pet.color_array = returnColors(data.pet.color_array);
 
+						data.pet.location = [data.pet.addr_city];
+
 						//console.log(data.pet);
 
 						complete_data.push(data.pet);
@@ -129,11 +131,16 @@
 					});
 				})(url, preview_image);
 			}
+
+			console.log(complete_data);
 		}
 		else {
 			console.log('getDetails: there is no data');
 		}
 	}
+
+
+
 
 	var returnColors = function(string){
 		switch(string){
@@ -455,61 +462,86 @@
 		applyFilters();
 	}
 
+
 	var applyFilters = function(){
-		ap.removeClass('ready');
 		ap_content.html('');
 
-		filtered_colors = null;
 		_complete_data = [];
 
-		// same filter
-		// if (filter_by.color.length){
-		// 	filtered_colors = _.filter(filter_set.color, function(a){
-		// 		return _.find(filter_by.color, function(b){
-		// 			return b === a;
-		// 		});
-		// 	});
-		// }
+		filter_count = 0;
 
-
-		// apply color filter
+		if (filter_by.location.length > 0){
+			filter_count = filter_count + 1;
+		}
 		if (filter_by.color.length > 0){
-			for (var i = 0; i < complete_data.length; i++){
-				console.log('a');
+			filter_count = filter_count + 1;
+		}
 
-				for (var _i = 0; _i < complete_data[i].color_array.length; _i++){
-					console.log('b');
 
-					if (isInArray(complete_data[i].color_array[_i], filter_by.color)){
-						console.log(complete_data[i]);
-						_complete_data.push(complete_data[i]);
-					}
+		for (var i = 0; i < complete_data.length; i++){
+			_filter_count = 0;
+			
+			for (var _i = 0; _i < complete_data[i].location.length; _i++){
+				if (isInArray(complete_data[i].location[_i], filter_by.location)){
+
+					_filter_count = _filter_count + 1;
 				}
 			}
+
+			for (var __i = 0; __i < complete_data[i].color_array.length; __i++){
+
+				if (isInArray(complete_data[i].color_array[__i], filter_by.color)){
+
+					_filter_count = _filter_count + 1;
+				}
+			}
+
+			if (_filter_count === filter_count){
+				_complete_data.push(complete_data[i]);
+			}
 		}
-		else {
-			_complete_data = complete_data;
-		}
+
+
+
+		// if (filter_by.location.length > 0){
+		// 	for (var i = 0; i < complete_data.length; i++){
+
+		// 		for (var _i = 0; _i < complete_data[i].location.length; _i++){
+
+		// 			if (isInArray(complete_data[i].location[_i], filter_by.location)){
+		// 				_complete_data.push(complete_data[i]);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		// if (filter_by.color.length > 0){
+		// 	for (var i = 0; i < complete_data.length; i++){
+
+		// 		for (var _i = 0; _i < complete_data[i].color_array.length; _i++){
+
+		// 			if (isInArray(complete_data[i].color_array[_i], filter_by.color)){
+		// 				_complete_data.push(complete_data[i]);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		
 
 		_complete_data = _.uniq(_complete_data, false);
 
-		// filter by color
-		// if (filter_by.color_array.length){
-		// 	_complete_data = _.filter(complete_data, function(a){
-		// 		return _.find(filter_by.color, function(b){
-		// 			return b === a.color;
-		// 		});
-		// 	});
-		// }
-
-
 		console.log('applyFilters: filters parsed');
-		console.log(_complete_data);
+		// console.log(_complete_data);
 
 		format();
+		ap.addClass('ready');
 	}
 
 
+	/* this function builds API filters and
+	** binds the navigation to apply and remove filters
+	*/
 	var filters = function(){
 		console.log('filters');
 		//console.log(Object.keys(filter_set).length);
@@ -529,27 +561,36 @@
 
 					$('.filter_'+ key +'').append('<li class="'+ cssName +'" data-filter="'+ filter_set[key][i] +'" data-filter-parent="'+ key +'" data-filter-applied="false">'+ filter_set[key][i] +'</li>');
 
-
 					$('.'+ cssName +'').click(function(){
 						parent_filter = $(this).attr('data-filter-parent');
 						filter = $(this).attr('data-filter');
 
-						console.log(''+ parent_filter +' > '+ filter +'');
+						//console.log(''+ parent_filter +' > '+ filter +'');
 
-						// if valye exist in array, remove and refresh results
+						// if filter is applied remove filter and refreah
 						// else add filter and refresh
-						if (isInArray(filter, filter_by[parent_filter])){
-						 	console.log('duplicate');
-							filter_by[parent_filter].splice(filter, 1);
+						if ($(this).attr('data-filter-applied') == 'true'){
+							removeArrayItem(filter_by[parent_filter], filter);
+							filter_by[parent_filter]= _.uniq(filter_by[parent_filter], false);
+
+							$(this).removeClass('active');
+							$(this).attr('data-filter-applied', 'false');
+							
+							console.log('duplicate');
 							console.log(filter_by);
 						}
 						else {
 							filter_by[parent_filter].push(filter);
 							filter_by[parent_filter] = _.uniq(filter_by[parent_filter], false);
 
+							$(this).addClass('active');
+							$(this).attr('data-filter-applied', 'true');
+							
+							console.log('original');
 							console.log(filter_by);
 						}
 
+						ap.attr('class', '');
 						applyFilters();
 					});
 				}
@@ -557,8 +598,18 @@
 		}
 	}
 
+
 	function isInArray(value, array) {
   		return array.indexOf(value) > -1;
+	}
+
+	function removeArrayItem(array, item){
+		for (var i in array){
+			if (array[i] == item){
+				array.splice(i, 1);
+				break;
+			}
+		}
 	}
 
 
