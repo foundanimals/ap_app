@@ -59,8 +59,7 @@
 	filter_by.breed = [];
 	
 	
-	/* inits app, gets count of locations,
-	** locations count used as a trigger to ensure all data is retrieved before getting details
+	/* inits app, gets count of locations
 	*/
 	var initApp = function(){
 		ap.attr('class', '');
@@ -98,7 +97,9 @@
 
 	/* uses general listing to retrieved detailed info,
 	** some variables are pushed into the details array,
-	** adds details to 'complete_data'
+	** adds details to complete_data
+	** total_pets used as a trigger to ensure all ajax calls
+	** are complete before parsing data
 	*/
 	var getDetails = function(data){
 		data = JSON.parse(data);
@@ -121,6 +122,12 @@
 					}).done(function(data, textStatus, jqXHR){
 						// rebuild some data
 						data = JSON.parse(data);
+
+						data.pet.pet_name = data.pet.pet_name.split(' ')[0];
+						data.pet.pet_name = data.pet.pet_name.split('-')[0];
+						data.pet.pet_name = data.pet.pet_name.split('.')[0];
+						data.pet.pet_name = data.pet.pet_name.split(',')[0];
+
 						data.pet.preview_image = preview_image;
 						data.pet.details_url = url;
 						data.pet.color_array = data.pet.color.toLowerCase();
@@ -180,6 +187,57 @@
 		filter_set.age = _.uniq(filter_set.age, false);
 		filter_set.color = _.uniq(filter_set.color, false);
 		filter_set.breed = _.uniq(filter_set.breed, false);
+
+		// sort filters
+		filter_set.location = filter_set.location.sort(function(a, b){
+			if (a < b) return 1;
+		    if (b < a) return -1;
+		    return 0;
+		}).reverse();
+
+		filter_set.species = filter_set.species.sort(function(a, b){
+			if (a < b) return 1;
+		    if (b < a) return -1;
+		    return 0;
+		}).reverse();
+
+		filter_set.sex = filter_set.sex.sort(function(a, b){
+			if (a < b) return 1;
+		    if (b < a) return -1;
+		    return 0;
+		}).reverse();
+
+		age = [];
+		for (age_i = 0; age_i < filter_set.age.length; age_i++){
+			if (filter_set.age[age_i] == 'Senior'){
+				age[0] = filter_set.age[age_i];
+			}
+			else if (filter_set.age[age_i] == 'Adult'){
+				age[1] = filter_set.age[age_i];
+			}
+			else if (filter_set.age[age_i] == 'Young'){
+				age[2] = filter_set.age[age_i];
+			}
+			else if (filter_set.age[age_i] == 'Kitten'){
+				age[3] = filter_set.age[age_i];
+			}
+			else if (filter_set.age[age_i] == 'Puppy'){
+				age[4] = filter_set.age[age_i];
+			}
+		}
+		filter_set.age = age;
+
+		filter_set.color = filter_set.color.sort(function(a, b){
+			if (a < b) return 1;
+		    if (b < a) return -1;
+		    return 0;
+		}).reverse();
+
+		filter_set.breed = filter_set.breed.sort(function(a, b){
+		    if (a < b) return 1;
+		    if (b < a) return -1;
+		    return 0;
+		}).reverse();
 
 		filters();
 	}
@@ -260,8 +318,10 @@
 		applyFilters();
 	}
 
-	// recreates complete_data as _complete_data
-	// applies selected filters
+
+	/* recreates complete_data as _complete_data
+	** applies selected filters
+	*/
 	var applyFilters = function(){
 		ap.attr('class', '');
 		ap_content.html('');
@@ -296,8 +356,8 @@
 		for (var i = 0; i < complete_data.length; i++){
 			_filter_count = 0;
 			
-			for (var _i = 0; _i < complete_data[i].location.length; _i++){
-				if (isInArray(complete_data[i].location[_i], filter_by.location)){
+			for (var loc_i = 0; loc_i < complete_data[i].location.length; loc_i++){
+				if (isInArray(complete_data[i].location[loc_i], filter_by.location)){
 					_filter_count = _filter_count + 1;
 				}
 			}
@@ -347,6 +407,8 @@
 	}
 
 
+	/* takes complete_data and produces html for presentation
+	*/
 	var format = function(){
 		console.log('format');
 
@@ -359,10 +421,11 @@
 
 				pet_location = _complete_data[i].addr_city;
 
-				pet_name = _complete_data[i].pet_name.split(' ')[0];
-				pet_name = pet_name.split('-')[0];
-				pet_name = pet_name.split('.')[0];
-				pet_name = pet_name.split(',')[0];
+				pet_name = _complete_data[i].pet_name;
+				// pet_name = _complete_data[i].pet_name.split(' ')[0];
+				// pet_name = pet_name.split('-')[0];
+				// pet_name = pet_name.split('.')[0];
+				// pet_name = pet_name.split(',')[0];
 
 				pet_age = _complete_data[i].age;
 
