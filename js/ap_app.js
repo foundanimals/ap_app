@@ -2,6 +2,16 @@
 	var ap = $('#ap_container');
 	var ap_content = $('#ap_content');
 
+	var locations = [
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
+		
+		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=10'],
+		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=10']
+		
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
+	];
+
 	var ap_modal = $('#ap_modal');
 	var ap_modal_close = $('#ap_modal_close');
 	var ap_modal_content = $('#ap_modal_content');
@@ -23,22 +33,14 @@
 	var ap_range_end = $('.range_end');
 
 	var total_locations = 0;
-	var total_locations_counter = 0;
 
-	var filter_count = 0;
-
-	var locations = [
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
-		
-		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=5'],
-		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=5']
-		
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
-	];
+	var total_pets = 0;
+	var total_pets_i = 0;
 
 	var complete_data = [];
 	var _complete_data = [];
+
+	var filter_count = 0;
 
 	var filter_set = [];
 	filter_set.location = [];
@@ -49,15 +51,16 @@
 	filter_set.breed = [];
 
 	var filter_by = [];
-	filter_by.color = [];
 	filter_by.location = [];
-
-	var total_pets = 0;
-	var total_pets_i = 0;
-
-
+	filter_by.species = [];
+	filter_by.sex = [];
+	filter_by.age = [];
+	filter_by.color = [];
+	filter_by.breed = [];
+	
+	
 	/* inits app, gets count of locations,
-	** 'locations' count used as a trigger to ensure all data is retrieved before getting details
+	** locations count used as a trigger to ensure all data is retrieved before getting details
 	*/
 	var initApp = function(){
 		ap.attr('class', '');
@@ -109,6 +112,7 @@
 				url = data.pets[i].details_url;
 				preview_image = [data.pets[i].results_photo_url, data.pets[i].results_photo_width, data.pets[i].results_photo_height];
 
+				// anonymous function used to prevent crossover
 				(function(url, preview_image){
 					$.ajax({
 						type: 'post',
@@ -129,7 +133,7 @@
 						total_pets_i = total_pets_i + 1;
 						if (total_pets_i == total_pets){
 							console.log('getDetails: received all '+ total_pets +' pet details');
-							// console.log(complete_data);
+
 							parseData();
 						}
 					}).fail(function(jqXHR, textStatus, errorThrown){
@@ -137,28 +141,12 @@
 					});
 				})(url, preview_image);
 			}
-
-			// console.log(complete_data);
 		}
 		else {
 			console.log('getDetails: there is no data');
 		}
 	}
 
-
-	var returnBreed = function(string){
-		switch(string){
-			case 'black':
-				color = ['black'];
-				console.log(string);
-				return color;
-				break;
-			default:
-				color = [];
-				console.log(string);
-				break;
-		}
-	}
 
 
 	/* This function iterates over complete_data and produces filters
@@ -212,6 +200,20 @@
 				//console.log(_filter_set[key]);
 
 				$('.controls').append('<ul class="filter_'+ key +'" data-filter-group="'+ key +'"></ul>');
+				$('.filter_'+ key +'').append('<lh class="filter_header_'+ key +'" data-filter-parent="'+ key +'" data-filter-open="false">'+ key +'</lh>');
+
+				$('.filter_header_'+ key +'').click(function(){
+					if ($(this).attr('data-filter-open') == 'false'){
+						parent_filter = $(this).attr('data-filter-parent');
+						$(this).attr('data-filter-open', 'true');
+						$('.filter_'+ parent_filter +'').addClass('open');
+					}
+					else {
+						parent_filter = $(this).attr('data-filter-parent');
+						$(this).attr('data-filter-open', 'false');
+						$('.filter_'+ parent_filter +'').removeClass('open');
+					}
+				});
 
 				for (var i = 0; i < filter_set[key].length; i++){
 					//console.log(_filter_set[key][i]);
@@ -234,8 +236,8 @@
 							$(this).removeClass('active');
 							$(this).attr('data-filter-applied', 'false');
 							
-							//console.log('duplicate');
-							//console.log(filter_by);
+							console.log('duplicate');
+							console.log(filter_by);
 						}
 						else {
 							filter_by[parent_filter].push(filter);
@@ -244,34 +246,53 @@
 							$(this).addClass('active');
 							$(this).attr('data-filter-applied', 'true');
 							
-							//console.log('original');
-							//console.log(filter_by);
+							console.log('original');
+							console.log(filter_by);
 						}
+
+						ap.attr('class', '');
+						applyFilters();
 					});
 				}
 			}
 		}
 
-		ap.attr('class', '');
 		applyFilters();
 	}
 
-
+	// recreates complete_data as _complete_data
+	// applies selected filters
 	var applyFilters = function(){
+		ap.attr('class', '');
 		ap_content.html('');
 
 		_complete_data = [];
 
+		// create a count of active filters
+		// pets will need to clear all active filters
 		filter_count = 0;
-
 		if (filter_by.location.length > 0){
 			filter_count = filter_count + 1;
 		}
 		if (filter_by.color.length > 0){
 			filter_count = filter_count + 1;
 		}
+		if (filter_by.species.length > 0){
+			filter_count = filter_count + 1;
+		}
+		if (filter_by.sex.length > 0){
+			filter_count = filter_count + 1;
+		}
+		if (filter_by.age.length > 0){
+			filter_count = filter_count + 1;
+		}
+		if (filter_by.breed.length > 0){
+			filter_count = filter_count + 1;
+		}
 
-
+		// individual tests for filters
+		// compares complete_data to active filters
+		// only pushes data that confirms each active filter set
 		for (var i = 0; i < complete_data.length; i++){
 			_filter_count = 0;
 			
@@ -281,9 +302,33 @@
 				}
 			}
 
-			for (var __i = 0; __i < complete_data[i].color_array.length; __i++){
+			for (var color_i = 0; color_i < complete_data[i].color_array.length; color_i++){
+				if (isInArray(complete_data[i].color_array[color_i], filter_by.color)){
+					_filter_count = _filter_count + 1;
+				}
+			}
 
-				if (isInArray(complete_data[i].color_array[__i], filter_by.color)){
+			for (var species_i = 0; species_i < filter_by.species.length; species_i++){
+				if (complete_data[i].species == filter_by.species[species_i]){
+					_filter_count = _filter_count + 1;
+				}
+			}
+
+			for (var sex_i = 0; sex_i < filter_by.sex.length; sex_i++){
+				if (complete_data[i].sex == filter_by.sex[sex_i]){
+					_filter_count = _filter_count + 1;
+				}
+			}
+
+			for (var age_i = 0; age_i < filter_by.age.length; age_i++){
+				if (complete_data[i].age == filter_by.age[age_i]){
+					_filter_count = _filter_count + 1;
+				}
+			}
+
+			for (var breed_i = 0; breed_i < filter_by.breed.length; breed_i++){
+				if (complete_data[i].primary_breed == filter_by.breed[breed_i]){
+
 					_filter_count = _filter_count + 1;
 				}
 			}
@@ -295,17 +340,11 @@
 
 		_complete_data = _.uniq(_complete_data, false);
 
-		console.log('applyFilters: filters parsed');
-		// console.log(_complete_data);
+		console.log(_complete_data);
+		console.log('applyFilters: complete');
 
 		format();
 	}
-
-
-
-
-
-
 
 
 	var format = function(){
@@ -332,12 +371,6 @@
 				pet_photo_h = ''+ _complete_data[i].preview_image[2] +'px';
 
 				pet_sex = _complete_data[i].sex;
-				if (pet_sex == 'm'){
-					pet_sex = 'Male'
-				}
-				else {
-					pet_sex = 'Female'
-				}
 
 				cellFormat = '<div class="pet" id="'+ pet_id +'" data-pet-url="'+ pet_url +'"><div class="photo_wrapper"><img class="pet_photo" src="'+ pet_photo +'" style="width: '+ pet_photo_w +'; height: '+ pet_photo_h +';" /></div> <div class="pet_name">'+ pet_name +'</div> <div class="pet_info">'+ pet_sex +', <span>'+ pet_age +'</span></div> <div class="pet_city">'+ pet_location +'</div> </div>';
 
@@ -442,11 +475,7 @@
 		}
 	}
 
-
-
-
-	/* this function takes a string input and replaces it with a sortable array
-	*/
+	// takes a string and replaces it with a sortable array
 	var returnColors = function(string){
 		switch(string){
 			// dog colors

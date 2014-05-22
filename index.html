@@ -55,6 +55,8 @@
                 width: 720px;
             }
 
+
+
             #ap_filters {
                 width: 100%;
             }
@@ -67,6 +69,14 @@
                 background: #31788C;
                 border-radius: 3px 3px 0 0;
             }
+            #ap_filters .sub-title {
+                width: 100%;
+                height: 70px;
+                color: #31788C;
+                text-align: center;
+                line-height: 70px;
+                background: #fff;
+            }
             #ap_filters .controls {
                 width: 100%;
                 min-height: 420px;
@@ -78,8 +88,34 @@
                 background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%);
                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
             }
-            #ap_filters ul li {
+
+            #ap_filters ul {
+                width: 100%;
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                background: #fff;
+            }
+            #ap_filters ul lh {
+                display: block;
+                width: 80%;
+                color: #31788C;
+                text-transform: uppercase;
+                padding: 5% 0;
+                margin: 0 10%;
+                background: url(img/filter_plus.png) right center no-repeat transparent;
+                border-top: 1px solid #DCDCDC;
                 cursor: pointer;
+
+            }   
+            #ap_filters ul li {
+                display: none;
+                width: 80%;
+                margin: 0 10%;
+                cursor: pointer;
+            }
+            #ap_filters ul li:last-child {
+                margin-bottom: 5%;
             }
             #ap_filters ul li:hover {
                 color: #31788C;
@@ -88,6 +124,15 @@
                 color: #31788C;
                 background: #eee;
             }
+
+            #ap_filters ul.open lh {
+                background: url(img/filter_minus.png) right center no-repeat transparent;
+            } 
+            #ap_filters ul.open li {
+                display: block;
+            }
+
+
 
             #ap_sorting {
                 width: 100%;
@@ -330,6 +375,7 @@
                 <div class="ap_left">
                     <div id="ap_filters">
                         <div class="title">Adoptable Pets</div>
+                        <div class="sub-title">Filter By:</div>
                         <div class="controls"></div>
                     </div>
                 </div>
