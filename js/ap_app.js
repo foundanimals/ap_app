@@ -225,6 +225,7 @@
 				age[4] = filter_set.age[age_i];
 			}
 		}
+		age = age.filter(function(e){return e}); 
 		filter_set.age = age;
 
 		filter_set.color = filter_set.color.sort(function(a, b){
@@ -289,7 +290,7 @@
 						// else add filter and refresh
 						if ($(this).attr('data-filter-applied') == 'true'){
 							removeArrayItem(filter_by[parent_filter], filter);
-							filter_by[parent_filter]= _.uniq(filter_by[parent_filter], false);
+							filter_by[parent_filter] = _.uniq(filter_by[parent_filter], false);
 
 							$(this).removeClass('active');
 							$(this).attr('data-filter-applied', 'false');
@@ -305,7 +306,7 @@
 							$(this).attr('data-filter-applied', 'true');
 							
 							console.log('original');
-							console.log(filter_by);
+							// console.log(filter_by);
 						}
 
 						ap.attr('class', '');
@@ -388,7 +389,6 @@
 
 			for (var breed_i = 0; breed_i < filter_by.breed.length; breed_i++){
 				if (complete_data[i].primary_breed == filter_by.breed[breed_i]){
-
 					_filter_count = _filter_count + 1;
 				}
 			}
@@ -400,8 +400,45 @@
 
 		_complete_data = _.uniq(_complete_data, false);
 
-		console.log(_complete_data);
+		// console.log(_complete_data);
 		console.log('applyFilters: complete');
+
+		activeFilters();
+		applySorting();
+	}
+
+
+	var activeFilters = function(){
+		console.log('activeFilters');
+		$('.active-filters').html('');
+
+		if (filter_by){
+			console.log('activeFilters if');
+
+			for (var key in filter_by){
+				if (filter_by.hasOwnProperty(key)){
+					console.log(key);
+
+					for (i = 0; i < filter_by[key].length; i++){
+						$('.active-filters').append('<span>'+ filter_by[key][i] +'</span>');
+						console.log(filter_by[key][i]);
+					}
+
+					
+				}
+			}
+
+		}
+	}
+
+
+	var applySorting = function(){
+		// sort pet_name by alpha
+		_complete_data = _complete_data.sort(function(a, b){
+			if (a.pet_name < b.pet_name) return 1;
+		    if (b.pet_name < a.pet_name) return -1;
+		    return 0;
+		}).reverse();
 
 		format();
 	}
