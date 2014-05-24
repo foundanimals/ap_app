@@ -5,11 +5,11 @@
 	var locations = [
 		// ['http://api.adoptapet.com/search/pets_at_shelter?key=5c3490ed69801d9916ca93987e061154&shelter_id=72604&output=json'],
 		
-		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=10'],
-		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=10']
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json&start_number=1&end_number=10'],
+		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json&start_number=1&end_number=10']
 		
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
-		// ['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
+		['http://api.adoptapet.com/search/pets_at_shelter?key=95052e1b892a28c5f89f696edf39b4ec&shelter_id=87677&output=json'],
+		['http://api.adoptapet.com/search/pets_at_shelter?key=ffa2f34adb6076ce7aba8162fb899d64&shelter_id=87678&output=json']
 	];
 
 	var ap_modal = $('#ap_modal');
@@ -278,7 +278,7 @@
 					//console.log(_filter_set[key][i]);
 					cssName = ''+ [key] +'_'+ [i] +'';
 
-					$('.filter_'+ key +'').append('<li class="'+ cssName +'" data-filter="'+ filter_set[key][i] +'" data-filter-parent="'+ key +'" data-filter-applied="false">'+ filter_set[key][i] +'</li>');
+					$('.filter_'+ key +'').append('<li class="'+ cssName +'" data-filter="'+ filter_set[key][i] +'" data-filter-parent="'+ key +'" data-filter-applied="false">'+ filter_set[key][i] +' <span>x</span></li>');
 
 					$('.'+ cssName +'').click(function(){
 						parent_filter = $(this).attr('data-filter-parent');
@@ -295,8 +295,8 @@
 							$(this).removeClass('active');
 							$(this).attr('data-filter-applied', 'false');
 							
-							console.log('duplicate');
-							console.log(filter_by);
+							//console.log('duplicate');
+							//console.log(filter_by);
 						}
 						else {
 							filter_by[parent_filter].push(filter);
@@ -305,7 +305,7 @@
 							$(this).addClass('active');
 							$(this).attr('data-filter-applied', 'true');
 							
-							console.log('original');
+							//console.log('original');
 							// console.log(filter_by);
 						}
 
@@ -403,32 +403,58 @@
 		// console.log(_complete_data);
 		console.log('applyFilters: complete');
 
-		activeFilters();
 		applySorting();
+		activeFilters();
 	}
 
 
 	var activeFilters = function(){
-		console.log('activeFilters');
+		isActive = 0;
+		activeArray = '';
+
 		$('.active-filters').html('');
 
 		if (filter_by){
-			console.log('activeFilters if');
-
 			for (var key in filter_by){
 				if (filter_by.hasOwnProperty(key)){
-					console.log(key);
+					//console.log(key);
 
-					for (i = 0; i < filter_by[key].length; i++){
-						$('.active-filters').append('<span>'+ filter_by[key][i] +'</span>');
-						console.log(filter_by[key][i]);
+					if (filter_by[key].length > 0){
+						isActive = 1;
+
+						activeArray = activeArray +'&'+ [key] +'='+ JSON.stringify(filter_by[key]) +'';
+
+						for (i = 0; i < filter_by[key].length; i++){
+							cssName = ''+ [key] +'_'+ [i] +'';
+
+							$('.active-filters').append('<div class="active_filter_'+ cssName +'" active-data-filter="'+ filter_by[key][i] +'" data-filter-parent="'+ filter_by[key] +'">'+ filter_by[key][i] +' <span>x</span></div>');
+							//console.log(filter_by[key][i]);
+
+							$('.active_filter_'+ cssName +'').click(function(){
+								parent_filter = $(this).attr('data-filter-parent');
+								filter = $(this).attr('active-data-filter');
+
+								$('*[data-filter="'+ filter +'"]').click();
+							});
+						}
+
 					}
-
-					
 				}
 			}
-
 		}
+
+		if (isActive == 1){
+			activeArray = 'AdoptablePets=true' + activeArray;
+			$('.filter-key').addClass('active');
+		}
+		else {
+			activeArray = '';
+			$('.filter-key').removeClass('active');
+		}
+
+		location.hash = activeArray;
+		console.log('activeFilters');
+		console.log(activeArray);
 	}
 
 
@@ -450,7 +476,8 @@
 		console.log('format');
 
 		if (_complete_data.length){
-			total_count = _complete_data.length;
+			total_count = complete_data.length;
+			_total_count = _complete_data.length;
 
 			for (var i = 0; i < _complete_data.length; i++){
 				pet_id = 'pet_id_'+ _complete_data[i].pet_id +'';
@@ -481,15 +508,20 @@
 					modal(url);
 				});
 			}
+
 			
-			ap_range_start.html(total_count);
+			ap_range_start.html(_total_count);
 			ap_range_end.html(total_count);
 			ap.addClass('ready');
 		}
 		else {
-			console.log('format: there is no data');
+			ap_range_start.html('0');
+			ap_range_end.html(total_count);
+
 			ap_content.append('there is no data');
 			ap.addClass('ready');
+
+			console.log('format: there is no data');
 		}
 	}
 

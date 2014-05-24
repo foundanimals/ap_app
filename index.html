@@ -56,7 +56,6 @@
             }
 
 
-
             #ap_filters {
                 width: 100%;
             }
@@ -64,19 +63,61 @@
                 width: 100%;
                 height: 70px;
                 color: #fff;
+                font-size: 22px;
                 text-align: center;
                 line-height: 70px;
                 background: #31788C;
                 border-radius: 3px 3px 0 0;
             }
-            #ap_filters .sub-title {
+
+            #ap_filters .filter-key {
+                position: relative;
                 width: 100%;
-                height: 70px;
+                min-height: 70px;
+                background: #fff;
+
+                -moz-user-select: none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            #ap_filters .filter-key .sub-title {
+                position: absolute;
+                width: 100%;
+                height: 65px;
+                min-height: 65px;
                 color: #31788C;
+                font-size: 16px;
                 text-align: center;
                 line-height: 70px;
                 background: #fff;
             }
+            #ap_filters .filter-key.active .sub-title {
+                display: none;
+            }
+            #ap_filters .active-filters {
+                float: left;
+                width: 80%;
+                padding: 5% 0;
+                margin: 0 10%;
+            }
+             #ap_filters .active-filters div {
+                float: left;
+                color: #31788C;
+                font-size: 14px;
+                padding: 0 1%;
+                margin: 0 3% 1% 0;
+                background: #eee;
+                cursor: pointer;
+                white-space: nowrap;
+                border-radius: 3px;
+             }
+             #ap_filters .active-filters div:last-child {
+                margin-right: 0;
+                margin-bottom: 0;
+             }
+
             #ap_filters .controls {
                 width: 100%;
                 padding-bottom: 25%;
@@ -90,6 +131,7 @@
             }
 
             #ap_filters ul {
+                clear: both;
                 width: 100%;
                 list-style-type: none;
                 padding: 0;
@@ -101,23 +143,36 @@
                 -ms-user-select: none;
                 user-select: none;
             }
+            #ap_filters ul:last-child {
+                margin-bottom: 10%;
+            }
             #ap_filters ul lh {
                 display: block;
                 width: 80%;
                 color: #31788C;
+                font-size: 16px;
                 text-transform: uppercase;
                 padding: 5% 0;
                 margin: 0 10%;
                 background: url(img/filter_plus.png) right center no-repeat transparent;
                 border-top: 1px solid #DCDCDC;
                 cursor: pointer;
-
-            }   
+            }
+            #ap_filters ul.open lh {
+                background: url(img/filter_minus.png) right center no-repeat transparent;
+            } 
+            #ap_filters ul.open li {
+                display: block;
+            }
             #ap_filters ul li {
                 overflow: hidden;
+                position: relative;
                 display: none;
-                width: 80%;
+                font-size: 14px;
+                width: 78%;
+                padding: 0 1%;
                 margin: 0 10%;
+                margin-bottom: 1%;
                 cursor: pointer;
                 white-space: nowrap; 
             }
@@ -130,33 +185,39 @@
             #ap_filters ul li.active {
                 color: #31788C;
                 background: #eee;
+                border-radius: 3px;
             }
-
-            #ap_filters ul.open lh {
-                background: url(img/filter_minus.png) right center no-repeat transparent;
-            } 
-            #ap_filters ul.open li {
+            #ap_filters ul li span {
+                display: none;
+                position: absolute;
+                top: 0;
+                right: 1%;
+            }
+            #ap_filters ul li.active span {
                 display: block;
             }
-
-
+            
 
             #ap_sorting {
+                display: inline-block;
+                color: #eee;
                 width: 100%;
-                height: 48px;
-                margin-bottom: 22px;
+                font-size: 12px;
+                padding: 0.5% 0;
+                margin-bottom: 7px;
                 background: #fff;
+                border-radius: 3px;
             }
-
             #ap_sorting .range {
-                float: left;
-                padding-left: 30px;
+                float: right;
+                padding-right: 1%;
             }
             #ap_sorting .range > div {
                 float: left;
                 color: #7C837C;
-                padding-top: 12px;
             }
+
+
 
             #ap_sorting .viewable {
                 float: left;
@@ -177,7 +238,6 @@
                 margin-left: 5px;
                 border: 1px solid #C9C9C9;
             }
-
             #ap_sorting .sorting {
                 float: left;
                 padding-left: 30px;
@@ -197,7 +257,6 @@
                 margin-left: 5px;
                 border: 1px solid #C9C9C9;
             }
-
             #ap_sorting .paging {
                 float: left;
                 padding-left: 30px;
@@ -232,7 +291,6 @@
                 clear: both;
                 width: 103%;
             }
-
             .pet {
                 position: relative;
                 float: left;
@@ -382,18 +440,23 @@
                 <div class="ap_left">
                     <div id="ap_filters">
                         <div class="title">Adoptable Pets</div>
-                        <div class="sub-title">Filter By:</div>
-                        <div class="active-filters"></div>
+                        <div class="filter-key">
+                            <div class="sub-title">Filter By:</div>
+                            <div class="active-filters"></div>
+                        </div>
                         <div class="controls"></div>
                     </div>
                 </div>
 
                 <div class="ap_body">
                     <div id="ap_sorting">
-                        <div class="range"><div class="range_start">0</div> <div>&nbsp;of&nbsp;</div> <div class="range_end">0</div></div>
+                        <div class="range"><div>showing&nbsp;</div> <div class="range_start">0</div> <div>&nbsp;of&nbsp;</div> <div class="range_end">0</div> <div>&nbsp;records</div></div>
+                        
+                        <!--
                         <div class="viewable"><span>View</span> <div class="viewable_dropdown"></div></div>
                         <div class="sorting"><span>Sort by</span> <div class="sorting_dropdown"></div></div>
                         <div class="paging"><span>Page:&nbsp;</span> <div class="paging_controls"><a href="" class="active">1</a><span>&nbsp;</span> <a href="">2</a><span>&nbsp;</span> <a href="">3</a><span>&nbsp;</span> <a href="" class="last">></a><span>&nbsp;</span> </div></div>
+                        -->
                     </div>
                     <div id="ap_content"></div>
                 </div>
